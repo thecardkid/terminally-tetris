@@ -1,4 +1,5 @@
-#Proposal
+# Proposal
+
 **Bombasstic Bamboo**
 
 Daniel Bishop, Shane Kelly, Hieu Nguyen, Rachel Yang
@@ -22,14 +23,14 @@ The primary goal of this project is to write a C implementation of the game Tetr
 ## Annotated Bibliography
 *Demonstrate that you have assembled the resources you need to get started.  One good way to do that is to include an annotated bibliography with a pointer to each resource and a few sentences that describe the content.*
 
-[OpenGL Matrices] (http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/)This tutorial, part of a series of tutorials for OpenGL, explains the cumulation of basic matrix translations and transformations, and provides a structure for Model, View, and Projection matrices to separate out the transformations in a clean and effective manner.
+[OpenGL Matrices](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/)This tutorial, part of a series of tutorials for OpenGL, explains the cumulation of basic matrix translations and transformations, and provides a structure for Model, View, and Projection matrices to separate out the transformations in a clean and effective manner.
 
-[Tetris game algorithm] (http://gaming.stackexchange.com/questions/13057/tetris-difficulty) This source contains details about how Tetris handles difficulty levels and block spawning.
+[Tetris game algorithm](http://gaming.stackexchange.com/questions/13057/tetris-difficulty) This source contains details about how Tetris handles difficulty levels and block spawning.
 
-[`fflush` documentation] (http://man7.org/linux/man-pages/man3/fflush.3.html) This website contains documentation for the `fflush` method that we will need to clear the current display every time the game state updates and a rerender is called.
+[`fflush` documentation](http://man7.org/linux/man-pages/man3/fflush.3.html) This website contains documentation for the `fflush` method that we will need to clear the current display every time the game state updates and a rerender is called.
 
 ## Product Backlog
-[Our Trello board.] (https://trello.com/b/98M6BDsY/softsysbombassticbamboo)
+[Our Trello board.](https://trello.com/b/98M6BDsY/softsysbombassticbamboo)
        
 ## Potential Roadblocks
 We have a decent sense of direction for this stage of the project, but we will let you know if any show-stopping questions arise.
