@@ -6,27 +6,15 @@
 
 #include "utils.h"
 #include "renderer.h"
+#include "block_factory.h"
 
 #define DELAY 500000
-
-int p = 1;
-void update_piece(int grid[GRID_H][GRID_W]) {
-    grid[p-1][4] = Empty;
-    grid[p-1][5] = Empty;
-    grid[p-1][6] = Empty;
-    grid[p][4] = Cyan;
-    grid[p][5] = Cyan;
-    grid[p+1][6] = Cyan;
-
-    if (p <= GRID_H) p++;
-}
 
 void begin_game(int grid[GRID_H][GRID_W]) {
     while (1) {
         clear();
         render(grid);
         refresh();
-        update_piece(grid);
         usleep(DELAY);
     }
 }
@@ -43,6 +31,7 @@ int main(int argc, char** argv) {
     initialize_grid(grid);
 
     set_up_screen();
+    spawn(L, grid);
     begin_game(grid);
 }
 
