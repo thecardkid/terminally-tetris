@@ -16,6 +16,9 @@ The primary goal of this project is to write a C implementation of the game Tetr
 
 - Decision on using OpenGL
   - OpenGL abstracts away the lowest level graphics operations, providing wrapper functions which manage geometric primitives (points, lines, and polygons). Manipulating the geometric primitives directly would probably be reasonable for our application. OpenGL’s documentation is suitable for our purposes.
+
+- `ncurses`
+  - `ncurses` is a package that will allow us to overwrite printed output to the terminal. It has reasonable optimizations, and will be adequate for this project as we are only ever updating a small grid.
  
 - Model-View-Controller Architecture
   - Our codebase will be in both C and C++. We will use C for controlling the game state, and C++ for graphics. The two components will communicate as follows: the view will send user input (e.g. keypresses) to the controller, and the controller will send game state diffs (square colors) back. We send diffs to optimize re-rendering: we simply do not care about cells that did not change color.
@@ -27,7 +30,7 @@ The primary goal of this project is to write a C implementation of the game Tetr
 
 [Tetris game algorithm](http://gaming.stackexchange.com/questions/13057/tetris-difficulty) This source contains details about how Tetris handles difficulty levels and block spawning.
 
-[`fflush` documentation](http://man7.org/linux/man-pages/man3/fflush.3.html) This website contains documentation for the `fflush` method that we will need to clear the current display every time the game state updates and a rerender is called.
+[`ncurses` documentation](http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/) This website contains documentation for the `ncurses` method package.
 
 ## Product Backlog
 [Our Trello board.](https://trello.com/b/98M6BDsY/softsysbombassticbamboo)
