@@ -43,6 +43,9 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread
 
+# C flags
+CFLAGS = -std=c99
+
 # Graphics flags
 GRAPHICSFLAGS = -lglut -lGL -lGLU
 
@@ -66,16 +69,17 @@ test :
 	LD_LIBRARY_PATH=$(CURRENT_DIR)/build ./build/main 1
 
 # Builds the main file.
-OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/utils.o
+OBJ = $(BUILD_DIR)/main.o \
+	  $(BUILD_DIR)/utils.o $(BUILD_DIR)/renderer.o
 
 # ==== Make rules ====
 
 $(BUILD_DIR)/main: $(OBJ)
-	$(C) $^ -o $@ $(LDFLAGS)
+	$(C) $^ -o $@ $(LDFLAGS) $(CFLAGS)
 
 # Builds the dependency object files.
 $(BUILD_DIR)/main.o : $(SRC_DIR)/main.c $(DEP_HEADERS)
-	$(C) -c $< -o $@
+	$(C) -c $< -o $@ $(CFLAGS)
 
 # Builds cpp files in src/
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp $(SRC_DIR)/%.h
@@ -83,5 +87,5 @@ $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp $(SRC_DIR)/%.h
 
 # Builds c files in src/
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c $(SRC_DIR)/%.h $(DEP_HEADERS)
-	$(C) -c $< -o $@
+	$(C) -c $< -o $@ $(CFLAGS)
 

@@ -36,3 +36,6 @@ cmake-build-debug/
 # Debug files
 *.dSYM/
 *.su
+
+# Vim files
+*.swp
