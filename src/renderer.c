@@ -16,13 +16,13 @@ void set_up_screen() {
     init_pair(Red, COLOR_RED, COLOR_BLACK);
 }
 
-void render(int grid[GRID_H][GRID_W]) {
+void render(int grid[GRID_W][GRID_H]) {
     int i, j, block;
 
-    for (i=OFFSET; i<GRID_H; i++) {
-        mvprintw(i-OFFSET, 0, "|");
-        for (j=0; j<GRID_W; j++) {
-            if ((block = grid[i][j]) != Empty) {
+    for (int y = OFFSET; y < GRID_H; y++) {
+        mvprintw(y-OFFSET, 0, "|");
+        for (int x = 0; x < GRID_W; x++) {
+            if ((block = grid[x][y]) != Empty) {
                 attron(COLOR_PAIR(block));
                 printw("@");
                 attroff(COLOR_PAIR(block));

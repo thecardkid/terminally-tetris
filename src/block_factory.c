@@ -1,63 +1,60 @@
 #include "block_factory.h"
 
-void spawn(BlockType t, int grid[GRID_H][GRID_W]) {
+BlockType spawn(Block* b, BlockType t) {
     switch(t) {
-        case I: return spawnI(grid);
-        case O: return spawnO(grid);
-        case T: return spawnT(grid);
-        case Z: return spawnZ(grid);
-        case S: return spawnS(grid);
-        case J: return spawnJ(grid);
-        case L: return spawnL(grid);
-        default: return;
+        case I: spawnI(b); break;
+        case O: spawnO(b); break;
+        case T: spawnT(b); break;
+        case Z: spawnZ(b); break;
+        case S: spawnS(b); break;
+        case J: spawnJ(b); break;
+        case L: spawnL(b); break;
     }
+    b->x = SPAWN_X;
+    b->y = 1;
+
+    int r = rand() % NUM_BLOCKS;
+    return r;
 }
 
-void spawnI(int grid[GRID_H][GRID_W]) {
-    grid[0][5] = Cyan;
-    grid[1][5] = Cyan;
-    grid[2][5] = Cyan;
-    grid[3][5] = Cyan;
+void spawnI(Block* b) {
+    memcpy(b->cells, IBlock, sizeof(IBlock));
+    b->color = Cyan;
+    b->type = I;
 }
 
-void spawnO(int grid[GRID_H][GRID_W]) {
-    grid[2][4] = Yellow;
-    grid[2][5] = Yellow;
-    grid[3][4] = Yellow;
-    grid[3][5] = Yellow;
+void spawnO(Block* b) {
+    memcpy(b->cells, OBlock, sizeof(IBlock));
+    b->color = Yellow;
+    b->type = O;
 }
 
-void spawnT(int grid[GRID_H][GRID_W]) {
-    grid[2][4] = Purple;
-    grid[3][3] = Purple;
-    grid[3][4] = Purple;
-    grid[3][5] = Purple;
+void spawnT(Block* b) {
+    memcpy(b->cells, TBlock, sizeof(IBlock));
+    b->color = Purple;
+    b->type = T;
 }
 
-void spawnZ(int grid[GRID_H][GRID_W]) {
-    grid[2][4] = Red;
-    grid[2][5] = Red;
-    grid[3][5] = Red;
-    grid[3][6] = Red;
+void spawnZ(Block* b) {
+    memcpy(b->cells, ZBlock, sizeof(IBlock));
+    b->color = Red;
+    b->type = Z;
 }
 
-void spawnS(int grid[GRID_H][GRID_W]) {
-    grid[2][5] = Green;
-    grid[2][4] = Green;
-    grid[3][4] = Green;
-    grid[3][3] = Green;
+void spawnS(Block* b) {
+    memcpy(b->cells, SBlock, sizeof(IBlock));
+    b->color = Green;
+    b->type = S;
 }
 
-void spawnJ(int grid[GRID_H][GRID_W]) {
-    grid[2][3] = Blue;
-    grid[3][3] = Blue;
-    grid[3][4] = Blue;
-    grid[3][5] = Blue;
+void spawnJ(Block* b) {
+    memcpy(b->cells, JBlock, sizeof(IBlock));
+    b->color = Blue;
+    b->type = J;
 }
 
-void spawnL(int grid[GRID_H][GRID_W]) {
-    grid[2][5] = White;
-    grid[3][5] = White;
-    grid[3][4] = White;
-    grid[3][3] = White;
+void spawnL(Block* b) {
+    memcpy(b->cells, LBlock, sizeof(IBlock));
+    b->color = White;
+    b->type = L;
 }

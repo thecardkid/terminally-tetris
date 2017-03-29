@@ -1,12 +1,15 @@
 #include <stdio.h>
+#include <string.h>
+#include <time.h>
 
 #include "utils.h"
 
-void spawn(BlockType t, int grid[GRID_H][GRID_W]);
-void spawnI(int grid[GRID_H][GRID_W]);
-void spawnO(int grid[GRID_H][GRID_W]);
-void spawnT(int grid[GRID_H][GRID_W]);
-void spawnZ(int grid[GRID_H][GRID_W]);
-void spawnS(int grid[GRID_H][GRID_W]);
-void spawnJ(int grid[GRID_H][GRID_W]);
-void spawnL(int grid[GRID_H][GRID_W]);
+BlockType spawn(Block* b, BlockType t);
+void spawnI(Block* b);
+void spawnO(Block* b);
+void spawnT(Block* b);
+void spawnZ(Block* b);
+void spawnS(Block* b);
+void spawnJ(Block* b);
+void spawnL(Block* b);
+
