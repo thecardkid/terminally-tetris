@@ -72,10 +72,13 @@ void begin_game(int grid[GRID_W][GRID_H]) {
 
         // Piece movement
         if (frameCounter >= MOVE_RATE) {
-            // TODO: @skelly override frame counter to force downward move on user input
+            // TODO: @skelly override frame counter to force downward move on 
+            //       user input
             // TODO: @skelly provide horizontal movement on user input
             if (!move_block(grid, block, 0)) {
-                // Block has hit the bottom of stage or top of another block. No longer meaningful to keep track of the block --> Spawn a new block
+                // Block has hit the bottom of stage or top of another block. 
+                // No longer meaningful to keep track of the 
+                // block --> Spawn a new block
                 next = spawn(block, next);
             }
             frameCounter = 0;
