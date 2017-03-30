@@ -38,7 +38,7 @@ int is_user_input() {
 
 void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
     int* frame_counter, Block *block) {
-    
+
     int frames_until_next_move;
     switch(user_input) {
         case DOWN_KEY: // move block down
@@ -135,6 +135,38 @@ int move_block(int grid[GRID_W][GRID_H], Block *block, int delta_x) {
     return canMove;
 }
 
+void shift_rows_down_by(int shift, int grid[GRID_W][GRID_H]) {
+    int r, c;
+    for (r = GRID_H-1; r >= 0; r--)
+        for (c = 0; c < GRID_W; c++)
+            grid[c][r] = grid[c][r-shift];
+
+    for (r = 0; r < shift; r++)
+        for (c = 0; c < GRID_W; c++)
+            grid[c][r] = Empty;
+}
+
+void clear_rows(int grid[GRID_W][GRID_H]) {
+    int c,
+        r = GRID_H-1,
+        full = 1,
+        shift = 0;
+
+    while (full && r >= 0) {
+        for (c = 0; c < GRID_W; c++)
+            if (grid[c][r] == Empty) {
+                full = 0;
+                break;
+            }
+
+        r--;
+        if (c == GRID_W)
+            shift++;
+    }
+
+    shift_rows_down_by(shift, grid);
+}
+
 void begin_game(int grid[GRID_W][GRID_H]) {
     Block *block = malloc(sizeof(Block));
     BlockType next = spawn(block, rand() % NUM_BLOCKS);
@@ -153,15 +185,17 @@ void begin_game(int grid[GRID_W][GRID_H]) {
         // Piece movement
         if (frameCounter >= MOVE_RATE) {
             if (!move_block(grid, block, 0)) {
-                // Block has hit the bottom of stage or top of another block. 
-                // No longer meaningful to keep track of the 
-                // block --> Spawn a new block
+                // Block has hit the bottom of stage or top of another block.
+                // No longer meaningful to keep track of the
+                // block. Spawn a new block
+
+                clear_rows(grid);
                 next = spawn(block, next);
             }
             frameCounter = 0;
         }
 
-        // Get user input 
+        // Get user input
         if (is_user_input()) {
             // The user has pressed a key, take appropriate action
             user_input = getchar();
