@@ -3,7 +3,7 @@
 const int GRID_W = 10;
 const int GRID_H = 22;
 const int OFFSET = 2;
-const int SPAWN_X = GRID_W/2 - 1;
+const int SPAWN_X = 4;
 const int NUM_BLOCKS = 7;
 
 // Encoding of cells occupied by an O block
