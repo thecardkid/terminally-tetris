@@ -16,7 +16,7 @@ void set_up_screen() {
     init_pair(Red, COLOR_RED, COLOR_BLACK);
 }
 
-void render(int grid[GRID_W][GRID_H]) {
+void render(int grid[GRID_W][GRID_H], char input) {
     int i, j, block;
 
     for (int y = OFFSET; y < GRID_H; y++) {
@@ -34,4 +34,7 @@ void render(int grid[GRID_W][GRID_H]) {
     }
 
     mvprintw(GRID_H-OFFSET, 0, "------------");
+    if (input != ERR) {
+        mvprintw(GRID_H-OFFSET+2, 0, "Last input: %c", input);
+    }
 }

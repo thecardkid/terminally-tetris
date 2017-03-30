@@ -9,7 +9,8 @@
 
 #define US 1000000 // 1 million microseconds per second
 #define TICK_RATE 60 // Steps per second
-#define DELAY US/TICK_RATE // Delay in microseconds to achieve tick rate
+#define US_DELAY US/TICK_RATE // Delay in microseconds to achieve tick rate
+#define MS_DELAY US_DELAY/1000 // Delay in milliseconds to achieve tick rate
 #define MOVE_RATE 12 // Steps per movement
 
 /*

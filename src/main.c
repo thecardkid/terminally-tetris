@@ -23,4 +23,3 @@ int main(int argc, char** argv) {
     set_up_screen();
     begin_game(grid);
 }
-

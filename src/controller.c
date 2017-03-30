@@ -62,12 +62,19 @@ void begin_game(int grid[GRID_W][GRID_H]) {
     BlockType next = spawn(block, rand() % NUM_BLOCKS);
 
     int frameCounter = 0;
+    char input;
     while (1) {
         frameCounter++;
 
+        timeout(MS_DELAY);
+        //timeout(-1);
+        //nodelay(TRUE);
+
+        input = getch();
+
         // Rendering loop
         clear();
-        render(grid);
+        render(grid, input);
         refresh();
 
         // Piece movement
@@ -85,6 +92,7 @@ void begin_game(int grid[GRID_W][GRID_H]) {
         }
 
         // Assuming execution of loop takes negligible time
-        usleep(DELAY);
+        //usleep(US_DELAY);
+
     }
 }
