@@ -3,6 +3,6 @@
 #include "utils.h"
 
 void set_up_screen();
-void render(int grid[GRID_H][GRID_W], char);
-void display(int grid[GRID_H][GRID_W]);
+void render(int grid[GRID_W][GRID_H]);
+void display(int grid[GRID_W][GRID_H]);
 

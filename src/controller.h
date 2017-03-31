@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include <termios.h>
+#include <fcntl.h>
 
 #include "utils.h"
 #include "renderer.h"
@@ -10,8 +12,19 @@
 #define US 1000000 // 1 million microseconds per second
 #define TICK_RATE 60 // Steps per second
 #define US_DELAY US/TICK_RATE // Delay in microseconds to achieve tick rate
-#define MS_DELAY US_DELAY/1000 // Delay in milliseconds to achieve tick rate
-#define MOVE_RATE 12 // Steps per movement
+#define MOVE_RATE 20 // Steps per movement
+
+
+/*
+ * Check if the user has pressed any keys
+ */
+int is_user_input();
+
+/*
+ * Modify the state of the game based on user input
+ */
+void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
+    int* frame_counter, Block* block);
 
 /*
  * Check if y coordinate has hit the bottom of the grid

@@ -4,11 +4,24 @@
 /*
  * External constants to be used in other files
  */
-extern const int GRID_W;
-extern const int GRID_H;
-extern const int OFFSET;
-extern const int SPAWN_X;
-extern const int NUM_BLOCKS;
+#define GRID_W 10
+#define GRID_H 22
+#define OFFSET 2
+#define SPAWN_X 4
+#define NUM_BLOCKS 7
+
+/*
+ * Controls
+ */
+#define UP_KEY 'k'
+#define DOWN_KEY 'j'
+#define LEFT_KEY 'h'
+#define RIGHT_KEY 'l'
+#define ROTATE_CW_KEY 'f'
+#define ROTATE_CCW_KEY 'd'
+#define PAUSE_KEY 'p'
+#define QUIT_KEY 'q'
+#define BOSS_MODE_KEY 'b'
 
 extern const int IBlock[4][2];
 extern const int OBlock[4][2];

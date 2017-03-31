@@ -16,7 +16,7 @@ void set_up_screen() {
     init_pair(Red, COLOR_RED, COLOR_BLACK);
 }
 
-void render(int grid[GRID_W][GRID_H], char input) {
+void render(int grid[GRID_W][GRID_H]) {
     int i, j, block;
 
     for (int y = OFFSET; y < GRID_H; y++) {
@@ -34,7 +34,17 @@ void render(int grid[GRID_W][GRID_H], char input) {
     }
 
     mvprintw(GRID_H-OFFSET, 0, "------------");
-    if (input != ERR) {
-        mvprintw(GRID_H-OFFSET+2, 0, "Last input: %c", input);
-    }
+
+    // Print controls
+    int row = 1;
+    mvprintw(row, GRID_W+5, "CONTROLS:"); row++;
+    mvprintw(row, GRID_W+5, "Up ------------------ %c", UP_KEY); row++;
+    mvprintw(row, GRID_W+5, "Down ---------------- %c", DOWN_KEY); row++;
+    mvprintw(row, GRID_W+5, "Left ---------------- %c", LEFT_KEY); row++;
+    mvprintw(row, GRID_W+5, "Right --------------- %c", RIGHT_KEY); row++;
+    mvprintw(row, GRID_W+5, "Clockwise ----------- %c", ROTATE_CW_KEY); row++;
+    mvprintw(row, GRID_W+5, "Counter-Clockwise --- %c", ROTATE_CCW_KEY); row++;
+    mvprintw(row, GRID_W+5, "Pause --------------- %c", PAUSE_KEY); row++;
+    mvprintw(row, GRID_W+5, "Quit ---------------- %c", QUIT_KEY); row++;
+    mvprintw(row, GRID_W+5, "Boss Mode ----------- %c", BOSS_MODE_KEY); row++;
 }

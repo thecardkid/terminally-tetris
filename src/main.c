@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     // Seed random generator for block spawning
     srand(time(NULL));
 
-    int grid[GRID_H][GRID_W];
+    int grid[GRID_W][GRID_H];
     initialize_grid(grid);
 
     set_up_screen();
