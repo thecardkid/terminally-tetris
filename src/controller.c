@@ -1,8 +1,5 @@
 #include "controller.h"
 
-// Gets rid of 'spawn()' implicit function declaration. Is this bad?
-#include "block_factory.h" 
-
 /*
  * Modify stdin, check for valid user input, and revert stdin to original state.
  *
@@ -30,8 +27,7 @@ int is_user_input() {
     fcntl(STDIN_FILENO, F_SETFL, old_fd);
 
     // If user input is valid
-    if(user_input != EOF)
-    {
+    if(user_input != EOF) {
         // Push user input back to stdin to be read again later
         ungetc(user_input, stdin);
         return 1;
@@ -57,19 +53,19 @@ void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
             move_block(grid, block, 1);
             break;
         case ROTATE_CW_KEY: // rotate block clockwise
-            // TODO: rotate block clockwise
+            // TODO: @skelly rotate block clockwise
             break;
         case ROTATE_CCW_KEY: // rotate block counter-clockwise
-            // TODO: rotate block counter-clockwise
+            // TODO: @skelly rotate block counter-clockwise
             break;
         case PAUSE_KEY: // pause the game
-            // TODO: pause the game
+            // TODO: @skelly pause the game
             break;
         case QUIT_KEY: // quit the game
-            // TODO: quit the game
+            // TODO: @skelly quit the game
             break;
         case BOSS_MODE_KEY: // set the game to boss mode
-            // TODO: set the game to boss mode
+            // TODO: @skelly set the game to boss mode
             break;
     }
 }
@@ -144,7 +140,6 @@ void begin_game(int grid[GRID_W][GRID_H]) {
         // Rendering loop
         clear();
         render(grid);
-        mvprintw(GRID_H+2, 0, "User input: %c", user_input); // for debugging
         refresh();
 
         // Piece movement
