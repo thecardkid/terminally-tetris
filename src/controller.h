@@ -14,7 +14,7 @@
 #define US 1000000 // 1 million microseconds per second
 #define TICK_RATE 60 // Steps per second
 #define DELAY US/TICK_RATE // Delay in microseconds to achieve tick rate
-#define MOVE_RATE 12 // Steps per movement
+#define MOVE_RATE 6 // Steps per movement
 
 /*
  * Check if y coordinate has hit the bottom of the grid
