@@ -1,5 +1,5 @@
-#ifndef SOFTSYS_BOMBASSTIC_BAMBOO_UTILS_H
-#define SOFTSYS_BOMBASSTIC_BAMBOO_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 /*
  * External constants to be used in other files
