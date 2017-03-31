@@ -26,11 +26,19 @@ int move_block(int grid[GRID_W][GRID_H], Block *block, int delta_x) {
 
     // Check for collision with other blocks and sides of stage
     if (canMove) {
+
+        // Resolve lateral movement before checking vertical movement
         for (int i = 0; i < 4; i++) {
             int x = block->cells[i][0] + block->x;
             int y = block->cells[i][1] + block->y;
 
-            if (is_within_grid(block->x, delta_x)) delta_x = 0;
+            if (is_within_grid(x, delta_x)) delta_x = 0;
+        }
+
+        // Resolve vertical movement
+        for (int i = 0; i < 4; i++) {
+            int x = block->cells[i][0] + block->x;
+            int y = block->cells[i][1] + block->y;
 
             // Check for collision with other blocks
             if (grid[x + delta_x][y + 1] != Empty) {
