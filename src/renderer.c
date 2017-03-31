@@ -34,4 +34,17 @@ void render(int grid[GRID_W][GRID_H]) {
     }
 
     mvprintw(GRID_H-OFFSET, 0, "------------");
+
+    // Print controls
+    int row = 1;
+    mvprintw(row++, GRID_W+5, "CONTROLS:");
+    mvprintw(row++, GRID_W+5, "Up ------------------ %c", UP_KEY);
+    mvprintw(row++, GRID_W+5, "Down ---------------- %c", DOWN_KEY);
+    mvprintw(row++, GRID_W+5, "Left ---------------- %c", LEFT_KEY);
+    mvprintw(row++, GRID_W+5, "Right --------------- %c", RIGHT_KEY);
+    mvprintw(row++, GRID_W+5, "Clockwise ----------- %c", ROTATE_CW_KEY);
+    mvprintw(row++, GRID_W+5, "Counter-Clockwise --- %c", ROTATE_CCW_KEY);
+    mvprintw(row++, GRID_W+5, "Pause --------------- %c", PAUSE_KEY);
+    mvprintw(row++, GRID_W+5, "Quit ---------------- %c", QUIT_KEY);
+    mvprintw(row++, GRID_W+5, "Boss Mode ----------- %c", BOSS_MODE_KEY);
 }
