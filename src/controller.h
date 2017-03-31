@@ -32,9 +32,34 @@ void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
 
 /*
  * Check if y coordinate has hit the bottom of the grid
+ *
+ * @param y: current y coordinate of the block
  */
 int hit_bottom_grid(int y);
+
+/*
+ * Check if horizontal translation is allowed
+ *
+ * @param x: current x coordinate of the block
+ * @param delta_x: horizontal translation of block
+ */
 int is_within_grid(int x, int delta_x);
+
+/*
+ * Helper method used by `clear_rows`
+ *
+ * @param shift: how many rows to shift by downwards
+ * @param grid: tetris game state
+ */
+void shift_rows_down_by(int shift, int grid[GRID_W][GRID_H]);
+
+/*
+ * Helper method used by the game loop that clears
+ * completed rows
+ *
+ * @param grid: tetris game state
+ */
+void clear_rows(int grid[GRID_W][GRID_H]);
 
 /*
  * Given a block and a desired shifting of that block, check to see if there
