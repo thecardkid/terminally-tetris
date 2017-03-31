@@ -137,13 +137,17 @@ int move_block(int grid[GRID_W][GRID_H], Block *block, int delta_x) {
 
 void shift_rows_down_by(int shift, int grid[GRID_W][GRID_H]) {
     int r, c;
-    for (r = GRID_H-1; r >= 0; r--)
-        for (c = 0; c < GRID_W; c++)
+    for (r = GRID_H-1; r >= 0; r--) {
+        for (c = 0; c < GRID_W; c++) {
             grid[c][r] = grid[c][r-shift];
+        }
+    }
 
-    for (r = 0; r < shift; r++)
-        for (c = 0; c < GRID_W; c++)
+    for (r = 0; r < shift; r++) {
+        for (c = 0; c < GRID_W; c++) {
             grid[c][r] = Empty;
+        }
+    }
 }
 
 void clear_rows(int grid[GRID_W][GRID_H]) {
@@ -153,15 +157,17 @@ void clear_rows(int grid[GRID_W][GRID_H]) {
         shift = 0;
 
     while (full && r >= 0) {
-        for (c = 0; c < GRID_W; c++)
+        for (c = 0; c < GRID_W; c++) {
             if (grid[c][r] == Empty) {
                 full = 0;
                 break;
             }
+        }
 
         r--;
-        if (c == GRID_W)
+        if (c == GRID_W) {
             shift++;
+        }
     }
 
     shift_rows_down_by(shift, grid);
