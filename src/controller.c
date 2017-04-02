@@ -36,8 +36,8 @@ int is_user_input() {
     return 0;
 }
 
-void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
-    int* frame_counter, Block *block) {
+void act_on_user_input(char user_input, State* s,
+    int* frame_counter) {
 
     int frames_until_next_move;
     switch(user_input) {
@@ -47,10 +47,10 @@ void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
             *frame_counter += frames_until_next_move;
             break;
         case LEFT_KEY: // move block left
-            move_block(grid, block, -1);
+            move_block(s, -1);
             break;
         case RIGHT_KEY: // move block right
-            move_block(grid, block, 1);
+            move_block(s, 1);
             break;
         case ROTATE_CW_KEY: // rotate block clockwise
             // TODO: @skelly rotate block clockwise
@@ -80,38 +80,38 @@ int is_within_grid(int x, int delta_x) {
     return 0;
 }
 
-int move_block(int grid[GRID_W][GRID_H], Block *block, int delta_x) {
+int move_block(State* s, int delta_x) {
     // Clear cells occupied by the block
     for (int i = 0; i < 4; i++) {
-        int x = block->cells[i][0] + block->x;
-        int y = block->cells[i][1] + block->y;
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
 
-        grid[x][y] = Empty;
+        s->grid[x][y] = Empty;
     }
 
     // Check the cells that the shift would move the block into for emptyness
     int canMove = 1;
 
-    if (hit_bottom_grid(block->y)) canMove = 0;
+    if (hit_bottom_grid(s->block->y)) canMove = 0;
 
     // Check for collision with other blocks and sides of stage
     if (canMove) {
 
         // Resolve lateral movement before checking vertical movement
         for (int i = 0; i < 4; i++) {
-            int x = block->cells[i][0] + block->x;
-            int y = block->cells[i][1] + block->y;
+            int x = s->block->cells[i][0] + s->block->x;
+            int y = s->block->cells[i][1] + s->block->y;
 
             if (is_within_grid(x, delta_x)) delta_x = 0;
         }
 
         // Resolve vertical movement
         for (int i = 0; i < 4; i++) {
-            int x = block->cells[i][0] + block->x;
-            int y = block->cells[i][1] + block->y;
+            int x = s->block->cells[i][0] + s->block->x;
+            int y = s->block->cells[i][1] + s->block->y;
 
             // Check for collision with other blocks
-            if (grid[x + delta_x][y + 1] != Empty) {
+            if (s->grid[x + delta_x][y + 1] != Empty) {
                 canMove = 0;
                 break;
             }
@@ -120,62 +120,23 @@ int move_block(int grid[GRID_W][GRID_H], Block *block, int delta_x) {
 
     // Update block position if no collisions
     if (canMove) {
-        block->x += delta_x;
-        block->y++;
+        s->block->x += delta_x;
+        s->block->y++;
     }
 
     // Set cells occupied by block to correct color
     for (int i = 0; i < 4; i++) {
-        int x = block->cells[i][0] + block->x;
-        int y = block->cells[i][1] + block->y;
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
 
-        grid[x][y] = block->color;
+        s->grid[x][y] = s->block->color;
     }
 
     return canMove;
 }
-
-void shift_rows_down_by(int shift, int grid[GRID_W][GRID_H]) {
-    int r, c;
-    for (r = GRID_H-1; r >= 0; r--) {
-        for (c = 0; c < GRID_W; c++) {
-            grid[c][r] = grid[c][r-shift];
-        }
-    }
-
-    for (r = 0; r < shift; r++) {
-        for (c = 0; c < GRID_W; c++) {
-            grid[c][r] = Empty;
-        }
-    }
-}
-
-void clear_rows(int grid[GRID_W][GRID_H]) {
-    int c,
-        r = GRID_H-1,
-        full = 1,
-        shift = 0;
-
-    while (full && r >= 0) {
-        for (c = 0; c < GRID_W; c++) {
-            if (grid[c][r] == Empty) {
-                full = 0;
-                break;
-            }
-        }
-
-        r--;
-        if (c == GRID_W) {
-            shift++;
-        }
-    }
-
-    shift_rows_down_by(shift, grid);
-}
-
-void begin_game(int grid[GRID_W][GRID_H]) {
-    Block *block = malloc(sizeof(Block));
-    BlockType next = spawn(block, rand() % NUM_BLOCKS);
+void begin_game(State* s) {
+    s->block = malloc(sizeof(Block));
+    s->next = spawn(s->block, rand() % NUM_BLOCKS);
 
     int frameCounter = 0;
     char user_input;
@@ -185,18 +146,18 @@ void begin_game(int grid[GRID_W][GRID_H]) {
 
         // Rendering loop
         clear();
-        render(grid);
+        render(s);
         refresh();
 
         // Piece movement
         if (frameCounter >= MOVE_RATE) {
-            if (!move_block(grid, block, 0)) {
+            if (!move_block(s, 0)) {
                 // Block has hit the bottom of stage or top of another block.
                 // No longer meaningful to keep track of the
                 // block. Spawn a new block
 
-                clear_rows(grid);
-                next = spawn(block, next);
+                update_score(s);
+                s->next = spawn(s->block, s->next);
             }
             frameCounter = 0;
         }
@@ -205,11 +166,10 @@ void begin_game(int grid[GRID_W][GRID_H]) {
         if (is_user_input()) {
             // The user has pressed a key, take appropriate action
             user_input = getchar();
-            act_on_user_input(user_input, grid, &frameCounter, block);
+            act_on_user_input(user_input, s, &frameCounter);
         }
 
         // Assuming execution of loop takes negligible time
         usleep(US_DELAY);
-
     }
 }

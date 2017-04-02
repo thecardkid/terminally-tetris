@@ -71,7 +71,8 @@ test :
 # Builds the main file.
 OBJ = $(BUILD_DIR)/main.o \
 	  $(BUILD_DIR)/utils.o $(BUILD_DIR)/renderer.o \
-	  $(BUILD_DIR)/block_factory.o $(BUILD_DIR)/controller.o
+	  $(BUILD_DIR)/block_factory.o $(BUILD_DIR)/controller.o \
+	  $(BUILD_DIR)/scorer.o
 
 # ==== Make rules ====
 
