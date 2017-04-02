@@ -58,7 +58,7 @@ typedef struct {
    int grid[GRID_W][GRID_H];
    int score;
    int level;
-   Block *block;
+   Block* block;
    BlockType next;
 } State;
 
