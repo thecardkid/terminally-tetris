@@ -20,7 +20,7 @@ State* create_game() {
     State* state = malloc(sizeof(State));
     initialize_grid(state->grid);
     state->score = 0;
-    // TODO @hgnuyen accept command line argument for level
+    // TODO @hnguyen accept command line argument for level
     state->level = 1;
     return state;
 }

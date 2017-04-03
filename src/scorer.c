@@ -4,6 +4,9 @@ void shift_rows_down(int grid[GRID_W][GRID_H]) {
     int c, r, shift = 0;
 
     for (r=GRID_H-1; r>=0; r--) {
+        // This loop moves from the bottom of the grid upwards
+        // to count how many times we need to shift populated
+        // rows downwards
         for (c=0; c<GRID_W; c++) {
             if (grid[c][r] != Empty) {
                 break;
@@ -11,8 +14,11 @@ void shift_rows_down(int grid[GRID_W][GRID_H]) {
         }
 
         if (c == GRID_W) {
+            // cumulate # rows to shift downwards
             shift++;
         } else if (shift > 0) {
+            // if row is populated and there are empty rows
+            // beneath it, perform shift
             for (c=0; c<GRID_W; c++) {
                 grid[c][r+shift] = grid[c][r];
                 grid[c][r] = Empty;
