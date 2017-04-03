@@ -1,5 +1,17 @@
 #include "block_factory.h"
 
+void copy_cells(BlockType t, int cells[4][2]) {
+    switch(t) {
+        case I: memcpy(cells, IBlock, sizeof(IBlock)); break;
+        case O: memcpy(cells, OBlock, sizeof(IBlock)); break;
+        case T: memcpy(cells, TBlock, sizeof(IBlock)); break;
+        case Z: memcpy(cells, ZBlock, sizeof(IBlock)); break;
+        case S: memcpy(cells, SBlock, sizeof(IBlock)); break;
+        case J: memcpy(cells, JBlock, sizeof(IBlock)); break;
+        case L: memcpy(cells, LBlock, sizeof(IBlock)); break;
+    }
+}
+
 BlockType spawn(Block* b, BlockType t) {
     switch(t) {
         case I: spawn_I(b); break;
