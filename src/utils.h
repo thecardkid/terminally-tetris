@@ -54,4 +54,12 @@ typedef struct {
     BlockType type;
 } Block;
 
+typedef struct {
+   int grid[GRID_W][GRID_H];
+   int score;
+   int level;
+   Block* block;
+   BlockType next;
+} State;
+
 #endif

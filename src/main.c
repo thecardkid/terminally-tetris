@@ -16,14 +16,24 @@ void initialize_grid(int grid[GRID_W][GRID_H]) {
     }
 }
 
+State* create_game() {
+    State* state = malloc(sizeof(State));
+    initialize_grid(state->grid);
+    state->score = 0;
+    // TODO @hnguyen accept command line argument for level
+    state->level = 1;
+    return state;
+}
+
 int main(int argc, char** argv) {
     // Seed random generator for block spawning
     srand(time(NULL));
 
     int grid[GRID_W][GRID_H];
     initialize_grid(grid);
+    State* state = create_game();
 
     set_up_screen();
-    begin_game(grid);
+    begin_game(state);
 }
 

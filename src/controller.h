@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "renderer.h"
 #include "block_factory.h"
+#include "scorer.h"
 
 #define US 1000000 // 1 million microseconds per second
 #define TICK_RATE 60 // Steps per second
@@ -27,8 +28,7 @@ int is_user_input();
 /*
  * Modify the state of the game based on user input
  */
-void act_on_user_input(char user_input, int grid[GRID_W][GRID_H],
-    int* frame_counter, Block* block);
+void act_on_user_input(char user_input, State* state, int* frame_counter);
 
 /*
  * Check if y coordinate has hit the bottom of the grid
@@ -46,22 +46,6 @@ int hit_bottom_grid(int y);
 int is_within_grid(int x, int delta_x);
 
 /*
- * Helper method used by `clear_rows`
- *
- * @param shift: how many rows to shift by downwards
- * @param grid: tetris game state
- */
-void shift_rows_down_by(int shift, int grid[GRID_W][GRID_H]);
-
-/*
- * Helper method used by the game loop that clears
- * completed rows
- *
- * @param grid: tetris game state
- */
-void clear_rows(int grid[GRID_W][GRID_H]);
-
-/*
  * Given a block and a desired shifting of that block, check to see if there
  * are any obstructions in the way.
  *
@@ -75,9 +59,9 @@ void clear_rows(int grid[GRID_W][GRID_H]);
  * @returns 0 if the block was blocked from moving vertically, indicating that
  * the block has "settled" and will no longer be interactive
 */
-int move_block(int grid[GRID_W][GRID_H], Block *block, int delta_x);
+int move_block(State* state, int delta_x);
 
-void begin_game(int grid[GRID_W][GRID_H]);
+void begin_game(State* state);
 
 #endif
 

@@ -16,13 +16,13 @@ void set_up_screen() {
     init_pair(Red, COLOR_RED, COLOR_BLACK);
 }
 
-void render(int grid[GRID_W][GRID_H]) {
+void render(State* state) {
     int i, j, block;
 
     for (int y = OFFSET; y < GRID_H; y++) {
         mvprintw(y-OFFSET, 0, "|");
         for (int x = 0; x < GRID_W; x++) {
-            if ((block = grid[x][y]) != Empty) {
+            if ((block = state->grid[x][y]) != Empty) {
                 attron(COLOR_PAIR(block));
                 printw("@");
                 attroff(COLOR_PAIR(block));
@@ -47,4 +47,8 @@ void render(int grid[GRID_W][GRID_H]) {
     mvprintw(row++, GRID_W+5, "Pause --------------- %c", PAUSE_KEY);
     mvprintw(row++, GRID_W+5, "Quit ---------------- %c", QUIT_KEY);
     mvprintw(row++, GRID_W+5, "Boss Mode ----------- %c", BOSS_MODE_KEY);
+
+    row++;
+    mvprintw(row++, GRID_W+5, "SCORE: %d", state->score);
 }
+
