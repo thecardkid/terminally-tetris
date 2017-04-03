@@ -13,6 +13,7 @@
 #include "renderer.h"
 #include "block_factory.h"
 #include "scorer.h"
+#include "rotate.h"
 
 #define US 1000000 // 1 million microseconds per second
 #define TICK_RATE 60 // Steps per second
@@ -59,9 +60,8 @@ int is_within_grid(int x, int delta_x);
  * @returns 0 if the block was blocked from moving vertically, indicating that
  * the block has "settled" and will no longer be interactive
 */
-int move_block(State* state, int delta_x);
+int move_block(State* state, int delta_x, Rotation r);
 
 void begin_game(State* state);
 
 #endif
-

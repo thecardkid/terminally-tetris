@@ -47,16 +47,16 @@ void act_on_user_input(char user_input, State* s,
             *frame_counter += frames_until_next_move;
             break;
         case LEFT_KEY: // move block left
-            move_block(s, -1);
+            move_block(s, -1, NO_ROTATE);
             break;
         case RIGHT_KEY: // move block right
-            move_block(s, 1);
+            move_block(s, 1, NO_ROTATE);
             break;
         case ROTATE_CW_KEY: // rotate block clockwise
-            // TODO: @skelly rotate block clockwise
+            move_block(s, 0, RIGHT);
             break;
         case ROTATE_CCW_KEY: // rotate block counter-clockwise
-            // TODO: @skelly rotate block counter-clockwise
+            move_block(s, 0, LEFT);
             break;
         case PAUSE_KEY: // pause the game
             // TODO: @skelly pause the game
@@ -80,7 +80,7 @@ int is_within_grid(int x, int delta_x) {
     return 0;
 }
 
-int move_block(State* s, int delta_x) {
+int move_block(State* s, int delta_x, Rotation r) {
     // Clear cells occupied by the block
     for (int i = 0; i < 4; i++) {
         int x = s->block->cells[i][0] + s->block->x;
@@ -96,6 +96,13 @@ int move_block(State* s, int delta_x) {
 
     // Check for collision with other blocks and sides of stage
     if (canMove) {
+
+        // Check for block rotation
+        switch (r) {
+            case 1: break;
+            case 0: rotate_left(s->block); break; // rotate COUNTER-CLOCKWISE
+            case 2: rotate_right(s->block); break; // rotate CLOCKWISE
+        }
 
         // Resolve lateral movement before checking vertical movement
         for (int i = 0; i < 4; i++) {
@@ -151,7 +158,7 @@ void begin_game(State* s) {
 
         // Piece movement
         if (frameCounter >= MOVE_RATE) {
-            if (!move_block(s, 0)) {
+            if (!move_block(s, 0, NO_ROTATE)) {
                 // Block has hit the bottom of stage or top of another block.
                 // No longer meaningful to keep track of the
                 // block. Spawn a new block

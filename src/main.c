@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "block_factory.h"
 #include "controller.h"
+#include "rotate.h"
 
 // Create grid and initialize all cells to zero (empty)
 void initialize_grid(int grid[GRID_W][GRID_H]) {
@@ -36,4 +37,3 @@ int main(int argc, char** argv) {
     set_up_screen();
     begin_game(state);
 }
-
