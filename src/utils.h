@@ -65,6 +65,7 @@ typedef struct {
    int grid[GRID_W][GRID_H];
    int score;
    int level;
+   int running; // 1: Game in progress 0: Game over
    Block* block;
    BlockType next;
 } State;

@@ -8,14 +8,14 @@
 #include "utils.h"
 
 void copy_cells(BlockType t, int cells[4][2]);
-BlockType spawn(Block* b, BlockType t);
-void spawn_I(Block* b);
-void spawn_O(Block* b);
-void spawn_T(Block* b);
-void spawn_Z(Block* b);
-void spawn_S(Block* b);
-void spawn_J(Block* b);
-void spawn_L(Block* b);
+void spawn(State* s);
+void spawnI(Block* b);
+void spawnO(Block* b);
+void spawnT(Block* b);
+void spawnZ(Block* b);
+void spawnS(Block* b);
+void spawnJ(Block* b);
+void spawnL(Block* b);
 
 #endif
 

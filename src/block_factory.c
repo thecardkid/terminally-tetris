@@ -12,21 +12,41 @@ void copy_cells(BlockType t, int cells[4][2]) {
     }
 }
 
-BlockType spawn(Block* b, BlockType t) {
-    switch(t) {
-        case I: spawn_I(b); break;
-        case O: spawn_O(b); break;
-        case T: spawn_T(b); break;
-        case Z: spawn_Z(b); break;
-        case S: spawn_S(b); break;
-        case J: spawn_J(b); break;
-        case L: spawn_L(b); break;
+void spawn(State* s) {
+    switch(s->next) {
+        case I: spawnI(s->block); break;
+        case O: spawnO(s->block); break;
+        case T: spawnT(s->block); break;
+        case Z: spawnZ(s->block); break;
+        case S: spawnS(s->block); break;
+        case J: spawnJ(s->block); break;
+        case L: spawnL(s->block); break;
     }
-    b->x = SPAWN_X;
-    b->y = 1;
+    s->block->x = SPAWN_X;
+    s->block->y = 1;
 
-    int r = rand() % NUM_BLOCKS;
-    return r;
+    if (spawnSpaceAvailable(s)) {
+        s->next = rand() % NUM_BLOCKS;
+    } else {
+        s->running = 0;
+    }
+}
+
+/*
+ * Make sure that all cells occupied by the block are empty.
+ * Perform this check immediately after spawning a block so that blocks do not
+ * spawn in eachother.
+ */
+int spawnSpaceAvailable(State* s) {
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
+
+        if (s->grid[x][y] != Empty) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 void spawn_I(Block* b) {
