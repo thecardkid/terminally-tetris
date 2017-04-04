@@ -15,15 +15,15 @@ void spawn(State* s);
  * Perform this check immediately after spawning a block so that blocks do not
  * spawn in eachother.
  */
-int spawnSpaceAvailable(State* s);
+int spawn_space_available(State* s);
 
-void spawnI(Block* b);
-void spawnO(Block* b);
-void spawnT(Block* b);
-void spawnZ(Block* b);
-void spawnS(Block* b);
-void spawnJ(Block* b);
-void spawnL(Block* b);
+void spawn_I(Block* b);
+void spawn_O(Block* b);
+void spawn_T(Block* b);
+void spawn_Z(Block* b);
+void spawn_S(Block* b);
+void spawn_J(Block* b);
+void spawn_L(Block* b);
 
 #endif
 

@@ -14,25 +14,25 @@ void copy_cells(BlockType t, int cells[4][2]) {
 
 void spawn(State* s) {
     switch(s->next) {
-        case I: spawnI(s->block); break;
-        case O: spawnO(s->block); break;
-        case T: spawnT(s->block); break;
-        case Z: spawnZ(s->block); break;
-        case S: spawnS(s->block); break;
-        case J: spawnJ(s->block); break;
-        case L: spawnL(s->block); break;
+        case I: spawn_I(s->block); break;
+        case O: spawn_O(s->block); break;
+        case T: spawn_T(s->block); break;
+        case Z: spawn_Z(s->block); break;
+        case S: spawn_S(s->block); break;
+        case J: spawn_J(s->block); break;
+        case L: spawn_L(s->block); break;
     }
     s->block->x = SPAWN_X;
     s->block->y = 1;
 
-    if (spawnSpaceAvailable(s)) {
+    if (spawn_space_available(s)) {
         s->next = rand() % NUM_BLOCKS;
     } else {
         s->mode = SHUTDOWN;
     }
 }
 
-int spawnSpaceAvailable(State* s) {
+int spawn_space_available(State* s) {
     for (int i = 0; i < 4; i++) {
         int x = s->block->cells[i][0] + s->block->x;
         int y = s->block->cells[i][1] + s->block->y;

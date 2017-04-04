@@ -48,12 +48,20 @@ void act_on_user_input(
             m->x += 1; // Move right by 1
             break;
         case ROTATE_CW_KEY: // rotate block clockwise
-            if (m->r == NO_ROTATE) m->r = RIGHT;
-            if (m->r == LEFT) m->r = NO_ROTATE;
+            if (m->r == NO_ROTATE) {
+                m->r = RIGHT;
+            }
+            if (m->r == LEFT) {
+                m->r = NO_ROTATE;
+            }
             break;
         case ROTATE_CCW_KEY: // rotate block counter-clockwise
-            if (m->r == NO_ROTATE) m->r = LEFT;
-            if (m->r == RIGHT) m->r = NO_ROTATE;
+            if (m->r == NO_ROTATE) {
+                m->r = LEFT;
+            }
+            if (m->r == RIGHT) {
+                m->r = NO_ROTATE;
+            }
             break;
         case PAUSE_KEY: // pause the game
             // TODO: @skelly pause the game
@@ -193,7 +201,7 @@ void begin_game(State* s) {
     s->block = malloc(sizeof(Block));
     s->next = rand() % NUM_BLOCKS;
     s->mode = RUNNING;
-    s->speed = 12;
+    s->speed = 48;
     spawn(s);
 
     int frame_counter = 0;
