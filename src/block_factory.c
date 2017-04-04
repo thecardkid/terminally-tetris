@@ -2,13 +2,13 @@
 
 void copy_cells(BlockType t, int cells[4][2]) {
     switch(t) {
-        case I: memcpy(cells, IBlock, sizeof(IBlock)); break;
-        case O: memcpy(cells, OBlock, sizeof(IBlock)); break;
-        case T: memcpy(cells, TBlock, sizeof(IBlock)); break;
-        case Z: memcpy(cells, ZBlock, sizeof(IBlock)); break;
-        case S: memcpy(cells, SBlock, sizeof(IBlock)); break;
-        case J: memcpy(cells, JBlock, sizeof(IBlock)); break;
-        case L: memcpy(cells, LBlock, sizeof(IBlock)); break;
+        case I: memcpy(cells, I_Block, sizeof(I_Block)); break;
+        case O: memcpy(cells, O_Block, sizeof(I_Block)); break;
+        case T: memcpy(cells, T_Block, sizeof(I_Block)); break;
+        case Z: memcpy(cells, Z_Block, sizeof(I_Block)); break;
+        case S: memcpy(cells, S_Block, sizeof(I_Block)); break;
+        case J: memcpy(cells, J_Block, sizeof(I_Block)); break;
+        case L: memcpy(cells, L_Block, sizeof(I_Block)); break;
     }
 }
 
