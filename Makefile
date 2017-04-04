@@ -72,7 +72,7 @@ test :
 OBJ = $(BUILD_DIR)/main.o \
 	  $(BUILD_DIR)/utils.o $(BUILD_DIR)/renderer.o \
 	  $(BUILD_DIR)/block_factory.o $(BUILD_DIR)/controller.o \
-	  $(BUILD_DIR)/scorer.o
+	  $(BUILD_DIR)/scorer.o $(BUILD_DIR)/rotate.o
 
 # ==== Make rules ====
 
@@ -90,4 +90,3 @@ $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp $(SRC_DIR)/%.h
 # Builds c files in src/
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c $(SRC_DIR)/%.h $(DEP_HEADERS)
 	$(C) -c $< -o $@ $(CFLAGS)
-

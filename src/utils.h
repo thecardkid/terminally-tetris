@@ -30,6 +30,8 @@ extern const int ZBlock[4][2];
 extern const int SBlock[4][2];
 extern const int JBlock[4][2];
 extern const int LBlock[4][2];
+extern const int rotation_matrix_R[2][2];
+extern const int rotation_matrix_L[2][2];
 
 /*
  * Taken from https://i.stack.imgur.com/JLRFu.png
@@ -42,6 +44,11 @@ typedef enum {Empty, Cyan, Blue, White, Yellow, Green, Purple, Red} BlockColor;
  * Taken from http://tetris.wikia.com/wiki/Tetromino
  */
 typedef enum {I, O, T, Z, S, J, L} BlockType;
+
+/*
+ * Define rotation parameter
+ */
+typedef enum {LEFT, NO_ROTATE, RIGHT} Rotation;
 
 /*
   Representation of generic Tetris block
