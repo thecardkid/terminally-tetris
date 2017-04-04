@@ -1,11 +1,5 @@
 #include "controller.h"
 
-/*
- * Modify stdin, check for valid user input, and revert stdin to original state.
- *
- * termios - http://man7.org/linux/man-pages/man3/tcsetattr.3.html
- * fcntl - http://man7.org/linux/man-pages/man2/fcntl.2.html
-*/
 int is_user_input() {
     struct termios old_term, new_term;
     int old_fd;
@@ -36,27 +30,30 @@ int is_user_input() {
     return 0;
 }
 
-void act_on_user_input(char user_input, State* s,
+void act_on_user_input(
+    char user_input, 
+    Movement* m,
     int* frame_counter) {
 
     int frames_until_next_move;
     switch(user_input) {
-        case DOWN_KEY: // move block down
-            frames_until_next_move = MOVE_RATE - (*frame_counter % MOVE_RATE);
-            if (frames_until_next_move == 0) frames_until_next_move = MOVE_RATE;
-            *frame_counter += frames_until_next_move;
+        case DOWN_KEY:
+            m->y = 1; // Move down by 1
+            *frame_counter = 0; // Reset counter for default downwards move
             break;
-        case LEFT_KEY: // move block left
-            move_block(s, -1, NO_ROTATE);
+        case LEFT_KEY:
+            m->x += -1; // Move left by 1
             break;
-        case RIGHT_KEY: // move block right
-            move_block(s, 1, NO_ROTATE);
+        case RIGHT_KEY:
+            m->x += 1; // Move right by 1
             break;
         case ROTATE_CW_KEY: // rotate block clockwise
-            move_block(s, 0, RIGHT);
+            if (m->r == NO_ROTATE) m->r = RIGHT;
+            if (m->r == LEFT) m->r = NO_ROTATE;
             break;
         case ROTATE_CCW_KEY: // rotate block counter-clockwise
-            move_block(s, 0, LEFT);
+            if (m->r == NO_ROTATE) m->r = LEFT;
+            if (m->r == RIGHT) m->r = NO_ROTATE;
             break;
         case PAUSE_KEY: // pause the game
             // TODO: @skelly pause the game
@@ -70,12 +67,7 @@ void act_on_user_input(char user_input, State* s,
     }
 }
 
-int is_within_grid_sides(int x, int delta_x) {
-    if (x + delta_x < 0 || x + delta_x > GRID_W - 1) return 1;
-    return 0;
-}
-
-int move_block(State* s, int delta_x, Rotation r) {
+int move_block(State* s, Movement* m) {
     // Clear cells occupied by the block
     for (int i = 0; i < 4; i++) {
         int x = s->block->cells[i][0] + s->block->x;
@@ -84,47 +76,86 @@ int move_block(State* s, int delta_x, Rotation r) {
         s->grid[x][y] = Empty;
     }
 
-    // Check the cells that the shift would move the block into for emptyness
-    int canMove = 1;
+    // Flags
+    int applied_move = 1;
+    int can_move_vert = 1;
+    int can_move_horiz = 1;
+    int can_rotate = 1;
 
-    // Check for collision with other blocks and stage edges
-    if (canMove) {
-        // Check for block rotation
-        switch (r) {
-            case 1: break;
-            case 0: rotate_left(s->block); break; // rotate COUNTER-CLOCKWISE
-            case 2: rotate_right(s->block); break; // rotate CLOCKWISE
-        }
+    // Keep attempty to apply moves until no moves can be applied
+    while (applied_move) { 
+        applied_move = 0;
 
-        // Resolve lateral movement before checking vertical movement
-        for (int i = 0; i < 4; i++) {
-            int x = s->block->cells[i][0] + s->block->x;
-            if (is_within_grid_sides(x, delta_x)) delta_x = 0;
-        }
+        // Try to move vertically
+        if (m->y != 0) {
+            can_move_vert = 1;
+            for (int i = 0; i < 4; i++) {
+                int x = s->block->cells[i][0] + s->block->x;
+                int y = s->block->cells[i][1] + s->block->y;
 
-        // Resolve vertical movement
-        for (int i = 0; i < 4; i++) {
-            int x = s->block->cells[i][0] + s->block->x;
-            int y = s->block->cells[i][1] + s->block->y;
-
-            // Check for collision with other blocks
-            if (s->grid[x + delta_x][y + 1] != Empty) {
-                canMove = 0;
-                break;
+                // Conditions where move is invalid
+                if (!in_grid(x, y + m->y) || s->grid[x][y + m->y] != Empty) {
+                    can_move_vert = 0;
+                    break;
+                }
             }
-
-            // Check for collision with bottom of stage
-            if (y + 1 >= GRID_H) {
-                canMove = 0;
-                break;
+            if (can_move_vert) {
+                s->block->y += m->y;
+                m->y = 0; // signal that we have performed this operation
+                applied_move = 1; // signal that A operation was performed
             }
         }
-    }
 
-    // Update block position if no collisions
-    if (canMove) {
-        s->block->x += delta_x;
-        s->block->y++;
+        // Try to move horizontally
+        if (m->x != 0) {
+            can_move_horiz = 1;
+            for (int i = 0; i < 4; i++) {
+                int x = s->block->cells[i][0] + s->block->x;
+                int y = s->block->cells[i][1] + s->block->y;
+
+                // Conditions where move is invalid
+                if (!in_grid(x + m->x, y) || s->grid[x + m->x][y] != Empty) {
+                    can_move_horiz = 0;
+                    break;
+                }
+            }
+            if (can_move_horiz) {
+                s->block->x += m->x;
+                m->x = 0;
+                applied_move = 1;
+            }
+        }
+
+        // Try to rotate
+        if (m->r != NO_ROTATE) {
+            can_rotate = 1;
+            switch (m->r) {
+                case LEFT: rotate_left(s->block); break;
+                case RIGHT: rotate_right(s->block); break;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int x = s->block->cells[i][0] + s->block->x;
+                int y = s->block->cells[i][1] + s->block->y;
+
+                // Conditions where move is invalid
+                if (!in_grid(x, y) || s->grid[x][y] != Empty) {
+                    can_rotate = 0;
+                    break;
+                }
+            }
+
+            if (!can_rotate) {
+                // Undo rotation
+                switch (m->r) {
+                    case LEFT: rotate_right(s->block); break;
+                    case RIGHT: rotate_left(s->block); break;
+                }
+            } else {
+                m->r = NO_ROTATE;
+                applied_move = 1;
+            }
+        }
     }
 
     // Set cells occupied by block to correct color
@@ -135,44 +166,59 @@ int move_block(State* s, int delta_x, Rotation r) {
         s->grid[x][y] = s->block->color;
     }
 
-    return canMove;
+    return can_move_vert;
 }
+
+void aggregate_movement(Movement* m, State* s, int* frame_counter) {
+    // Initialize with zero movement
+    m->x = 0;
+    m->y = 0;
+    m->r = NO_ROTATE;
+
+    // Default downwards movement
+    if (*frame_counter > s->speed) {
+        m->y = 1;
+        *frame_counter = 0;
+    }
+
+    // Get user input
+    if (is_user_input()) {
+        // The user has pressed a key, take appropriate action
+        char user_input = getchar();
+        act_on_user_input(user_input, m, frame_counter);
+    }
+}
+
 void begin_game(State* s) {
     s->block = malloc(sizeof(Block));
     s->next = rand() % NUM_BLOCKS;
-    s->running = 1;
+    s->mode = RUNNING;
+    s->speed = 12;
     spawn(s);
 
-    int frameCounter = 0;
-    char user_input;
+    int frame_counter = 0;
+    Movement* net_move = malloc(sizeof(Movement));
 
-    while (s->running) {
-        frameCounter++;
+    while (s->mode == RUNNING) {
+        frame_counter++;
+        // Collect desired total movement in this frame
+        aggregate_movement(net_move, s, &frame_counter);
+
+        // Perform movement
+        if (!move_block(s, net_move)) {
+            // Block was unable to make any valid downwards move.
+
+            // Perform row clear if needed and update score
+            update_score(s);
+
+            // Spawn a new block
+            spawn(s);
+        }
 
         // Rendering loop
         clear();
         render(s);
         refresh();
-
-        // Piece movement
-        if (frameCounter >= MOVE_RATE) {
-            if (!move_block(s, 0, NO_ROTATE)) {
-                // Block has hit the bottom of stage or top of another block.
-                // No longer meaningful to keep track of the
-                // block. Spawn a new block
-
-                update_score(s);
-                spawn(s);
-            }
-            frameCounter = 0;
-        }
-
-        // Get user input
-        if (is_user_input()) {
-            // The user has pressed a key, take appropriate action
-            user_input = getchar();
-            act_on_user_input(user_input, s, &frameCounter);
-        }
 
         // Assuming execution of loop takes negligible time
         usleep(US_DELAY);

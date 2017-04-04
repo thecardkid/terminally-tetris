@@ -22,45 +22,36 @@
 
 
 /*
- * Check if the user has pressed any keys
- */
+ * Modify stdin, check for valid user input, and revert stdin to original state.
+ *
+ * termios - http://man7.org/linux/man-pages/man3/tcsetattr.3.html
+ * fcntl - http://man7.org/linux/man-pages/man2/fcntl.2.html
+*/
 int is_user_input();
 
 /*
  * Modify the state of the game based on user input
  */
-void act_on_user_input(char user_input, State* state, int* frame_counter);
+void act_on_user_input(char user_input, Movement* m, int* frame_counter);
 
 /*
- * Check if y coordinate has hit the bottom of the grid
- *
- * @param y: current y coordinate of the block
+ * Most basic movement in the game, attempt to move block down by one step. If
+ * this movement is obstructed, return 0.
+ * 
+ * Moves have a set ordering in which they will be executed in the case that
+ * some combination of movements is impossible.
+ *  1: vertical move
+ *  2: horizontal move
+ *  3: rotational move
+ * in the event that one of these sub-moves is impossible, it will be re-tried
+ * once all other sub-moves in the movement are executed.
  */
-int hit_bottom_grid(int y);
+int move_block(State* s, Movement* m);
 
 /*
- * Check if horizontal translation is allowed
- *
- * @param x: current x coordinate of the block
- * @param delta_x: horizontal translation of block
+ * Collect total movements from all sources
  */
-int is_within_grid(int x, int delta_x);
-
-/*
- * Given a block and a desired shifting of that block, check to see if there
- * are any obstructions in the way.
- *
- * If no obsctructions are present, move the block into new position.
- *
- * Only a change in x position is passed as a parameter since all movements
- * include 1 step down no matter what.
- *
- * Rotations of the block should be performed before attempting movement.
- *
- * @returns 0 if the block was blocked from moving vertically, indicating that
- * the block has "settled" and will no longer be interactive
-*/
-int move_block(State* state, int delta_x, Rotation r);
+void aggregate_movement(Movement* m, State* s, int* frame_counter);
 
 void begin_game(State* state);
 

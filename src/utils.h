@@ -34,6 +34,11 @@ extern const int rotation_matrix_R[2][2];
 extern const int rotation_matrix_L[2][2];
 
 /*
+ * Checks whether coordinate is inside playable area
+ */
+int in_grid(int x, int y);
+
+/*
  * Taken from https://i.stack.imgur.com/JLRFu.png
  *
  * Not defined as enum class to allow implicit casting to int
@@ -51,6 +56,11 @@ typedef enum {I, J, L, O, S, T, Z} BlockType;
 typedef enum {LEFT, NO_ROTATE, RIGHT} Rotation;
 
 /*
+ * Modes that the game can be in
+ */
+typedef enum {RUNNING, PAUSED, SHUTDOWN, BOSS} Gamemode;
+
+/*
   Representation of generic Tetris block
 */
 typedef struct {
@@ -62,12 +72,22 @@ typedef struct {
 } Block;
 
 typedef struct {
-   int grid[GRID_W][GRID_H];
-   int score;
-   int level;
-   int running; // 1: Game in progress 0: Game over
-   Block* block;
-   BlockType next;
+    int grid[GRID_W][GRID_H];
+    int score;
+    int level;
+    Gamemode mode; // 1: Game in progress 0: Game over
+    int speed; // speed at which blocks move down without user input
+    Block* block;
+    BlockType next;
 } State;
+
+/*
+ * Container for aggregating net movement in a frame.
+ */
+typedef struct {
+    int x;
+    int y;
+    Rotation r;
+} Movement;
 
 #endif

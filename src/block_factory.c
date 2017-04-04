@@ -28,15 +28,10 @@ void spawn(State* s) {
     if (spawnSpaceAvailable(s)) {
         s->next = rand() % NUM_BLOCKS;
     } else {
-        s->running = 0;
+        s->mode = SHUTDOWN;
     }
 }
 
-/*
- * Make sure that all cells occupied by the block are empty.
- * Perform this check immediately after spawning a block so that blocks do not
- * spawn in eachother.
- */
 int spawnSpaceAvailable(State* s) {
     for (int i = 0; i < 4; i++) {
         int x = s->block->cells[i][0] + s->block->x;
