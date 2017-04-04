@@ -23,13 +23,13 @@
 #define QUIT_KEY 'q'
 #define BOSS_MODE_KEY 'b'
 
-extern const int IBlock[4][2];
-extern const int OBlock[4][2];
-extern const int TBlock[4][2];
-extern const int ZBlock[4][2];
-extern const int SBlock[4][2];
-extern const int JBlock[4][2];
-extern const int LBlock[4][2];
+extern const int I_Block[4][2];
+extern const int O_Block[4][2];
+extern const int T_Block[4][2];
+extern const int Z_Block[4][2];
+extern const int S_Block[4][2];
+extern const int J_Block[4][2];
+extern const int L_Block[4][2];
 extern const int rotation_matrix_R[2][2];
 extern const int rotation_matrix_L[2][2];
 
