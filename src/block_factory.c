@@ -2,13 +2,13 @@
 
 BlockType spawn(Block* b, BlockType t) {
     switch(t) {
-        case I: spawnI(b); break;
-        case O: spawnO(b); break;
-        case T: spawnT(b); break;
-        case Z: spawnZ(b); break;
-        case S: spawnS(b); break;
-        case J: spawnJ(b); break;
-        case L: spawnL(b); break;
+        case I: spawn_I(b); break;
+        case O: spawn_O(b); break;
+        case T: spawn_T(b); break;
+        case Z: spawn_Z(b); break;
+        case S: spawn_S(b); break;
+        case J: spawn_J(b); break;
+        case L: spawn_L(b); break;
     }
     b->x = SPAWN_X;
     b->y = 1;
@@ -17,44 +17,44 @@ BlockType spawn(Block* b, BlockType t) {
     return r;
 }
 
-void spawnI(Block* b) {
-    memcpy(b->cells, IBlock, sizeof(IBlock));
+void spawn_I(Block* b) {
+    memcpy(b->cells, I_Block, sizeof(I_Block));
     b->color = Cyan;
     b->type = I;
 }
 
-void spawnO(Block* b) {
-    memcpy(b->cells, OBlock, sizeof(IBlock));
+void spawn_O(Block* b) {
+    memcpy(b->cells, O_Block, sizeof(I_Block));
     b->color = Yellow;
     b->type = O;
 }
 
-void spawnT(Block* b) {
-    memcpy(b->cells, TBlock, sizeof(IBlock));
+void spawn_T(Block* b) {
+    memcpy(b->cells, T_Block, sizeof(I_Block));
     b->color = Purple;
     b->type = T;
 }
 
-void spawnZ(Block* b) {
-    memcpy(b->cells, ZBlock, sizeof(IBlock));
+void spawn_Z(Block* b) {
+    memcpy(b->cells, Z_Block, sizeof(I_Block));
     b->color = Red;
     b->type = Z;
 }
 
-void spawnS(Block* b) {
-    memcpy(b->cells, SBlock, sizeof(IBlock));
+void spawn_S(Block* b) {
+    memcpy(b->cells, S_Block, sizeof(I_Block));
     b->color = Green;
     b->type = S;
 }
 
-void spawnJ(Block* b) {
-    memcpy(b->cells, JBlock, sizeof(IBlock));
+void spawn_J(Block* b) {
+    memcpy(b->cells, J_Block, sizeof(I_Block));
     b->color = Blue;
     b->type = J;
 }
 
-void spawnL(Block* b) {
-    memcpy(b->cells, LBlock, sizeof(IBlock));
+void spawn_L(Block* b) {
+    memcpy(b->cells, L_Block, sizeof(I_Block));
     b->color = White;
     b->type = L;
 }
