@@ -7,7 +7,7 @@
 
 #include "utils.h"
 
-BlockType spawn(Block* b, BlockType t);
+void spawn(State* s);
 void spawnI(Block* b);
 void spawnO(Block* b);
 void spawnT(Block* b);
