@@ -70,12 +70,7 @@ void act_on_user_input(char user_input, State* s,
     }
 }
 
-int hit_bottom_grid(int y) {
-    if (y >= GRID_H - 1) return 1;
-    return 0;
-}
-
-int is_within_grid(int x, int delta_x) {
+int is_within_grid_sides(int x, int delta_x) {
     if (x + delta_x < 0 || x + delta_x > GRID_W - 1) return 1;
     return 0;
 }
@@ -92,11 +87,8 @@ int move_block(State* s, int delta_x, Rotation r) {
     // Check the cells that the shift would move the block into for emptyness
     int canMove = 1;
 
-    if (hit_bottom_grid(s->block->y)) canMove = 0;
-
-    // Check for collision with other blocks and sides of stage
+    // Check for collision with other blocks and stage edges
     if (canMove) {
-
         // Check for block rotation
         switch (r) {
             case 1: break;
@@ -107,9 +99,7 @@ int move_block(State* s, int delta_x, Rotation r) {
         // Resolve lateral movement before checking vertical movement
         for (int i = 0; i < 4; i++) {
             int x = s->block->cells[i][0] + s->block->x;
-            int y = s->block->cells[i][1] + s->block->y;
-
-            if (is_within_grid(x, delta_x)) delta_x = 0;
+            if (is_within_grid_sides(x, delta_x)) delta_x = 0;
         }
 
         // Resolve vertical movement
@@ -119,6 +109,12 @@ int move_block(State* s, int delta_x, Rotation r) {
 
             // Check for collision with other blocks
             if (s->grid[x + delta_x][y + 1] != Empty) {
+                canMove = 0;
+                break;
+            }
+
+            // Check for collision with bottom of stage
+            if (y + 1 >= GRID_H) {
                 canMove = 0;
                 break;
             }
@@ -143,12 +139,14 @@ int move_block(State* s, int delta_x, Rotation r) {
 }
 void begin_game(State* s) {
     s->block = malloc(sizeof(Block));
-    s->next = spawn(s->block, rand() % NUM_BLOCKS);
+    s->next = rand() % NUM_BLOCKS;
+    s->running = 1;
+    spawn(s);
 
     int frameCounter = 0;
     char user_input;
 
-    while (1) {
+    while (s->running) {
         frameCounter++;
 
         // Rendering loop
@@ -164,7 +162,7 @@ void begin_game(State* s) {
                 // block. Spawn a new block
 
                 update_score(s);
-                s->next = spawn(s->block, s->next);
+                spawn(s);
             }
             frameCounter = 0;
         }
@@ -179,4 +177,9 @@ void begin_game(State* s) {
         // Assuming execution of loop takes negligible time
         usleep(US_DELAY);
     }
+
+    // Shutdown procedure
+    clear();
+    refresh();
+    // TODO: @dbishop terminal state not resetting properly, input not visible
 }
