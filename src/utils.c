@@ -13,5 +13,5 @@ const int rotation_matrix_L[2][2] = {{0,1}, {-1,0}};
 
 int in_grid(int x, int y) {
     if (x < 0 || x >= GRID_W || y < 0 || y >= GRID_H) return 0;
-    return 1; 
+    return 1;
 }

@@ -31,7 +31,7 @@ int is_user_input() {
 }
 
 void act_on_user_input(
-    char user_input, 
+    char user_input,
     Movement* m,
     int* frame_counter) {
 
@@ -81,7 +81,7 @@ int move_block(State* s, Movement* m) {
         int x = s->block->cells[i][0] + s->block->x;
         int y = s->block->cells[i][1] + s->block->y;
 
-        s->grid[x][y] = Empty;
+        s->grid[x][y] = EMPTY;
     }
 
     // Flags
@@ -91,7 +91,7 @@ int move_block(State* s, Movement* m) {
     int can_rotate = 1;
 
     // Keep attempty to apply moves until no moves can be applied
-    while (applied_move) { 
+    while (applied_move) {
         applied_move = 0;
 
         // Try to move vertically
@@ -102,7 +102,7 @@ int move_block(State* s, Movement* m) {
                 int y = s->block->cells[i][1] + s->block->y;
 
                 // Conditions where move is invalid
-                if (!in_grid(x, y + m->y) || s->grid[x][y + m->y] != Empty) {
+                if (!in_grid(x, y + m->y) || s->grid[x][y + m->y] != EMPTY) {
                     can_move_vert = 0;
                     break;
                 }
@@ -122,7 +122,7 @@ int move_block(State* s, Movement* m) {
                 int y = s->block->cells[i][1] + s->block->y;
 
                 // Conditions where move is invalid
-                if (!in_grid(x + m->x, y) || s->grid[x + m->x][y] != Empty) {
+                if (!in_grid(x + m->x, y) || s->grid[x + m->x][y] != EMPTY) {
                     can_move_horiz = 0;
                     break;
                 }
@@ -140,6 +140,7 @@ int move_block(State* s, Movement* m) {
             switch (m->r) {
                 case LEFT: rotate_left(s->block); break;
                 case RIGHT: rotate_right(s->block); break;
+                default: break;
             }
 
             for (int i = 0; i < 4; i++) {
@@ -147,7 +148,7 @@ int move_block(State* s, Movement* m) {
                 int y = s->block->cells[i][1] + s->block->y;
 
                 // Conditions where move is invalid
-                if (!in_grid(x, y) || s->grid[x][y] != Empty) {
+                if (!in_grid(x, y) || s->grid[x][y] != EMPTY) {
                     can_rotate = 0;
                     break;
                 }
@@ -158,6 +159,7 @@ int move_block(State* s, Movement* m) {
                 switch (m->r) {
                     case LEFT: rotate_right(s->block); break;
                     case RIGHT: rotate_left(s->block); break;
+                    default: break;
                 }
             } else {
                 m->r = NO_ROTATE;

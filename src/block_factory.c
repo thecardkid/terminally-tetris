@@ -37,7 +37,7 @@ int spawn_space_available(State* s) {
         int x = s->block->cells[i][0] + s->block->x;
         int y = s->block->cells[i][1] + s->block->y;
 
-        if (s->grid[x][y] != Empty) {
+        if (s->grid[x][y] != EMPTY) {
             return 0;
         }
     }
@@ -46,42 +46,42 @@ int spawn_space_available(State* s) {
 
 void spawn_I(Block* b) {
     memcpy(b->cells, I_Block, sizeof(I_Block));
-    b->color = Cyan;
+    b->color = CYAN;
     b->type = I;
 }
 
 void spawn_O(Block* b) {
     memcpy(b->cells, O_Block, sizeof(I_Block));
-    b->color = Yellow;
+    b->color = YELLOW;
     b->type = O;
 }
 
 void spawn_T(Block* b) {
     memcpy(b->cells, T_Block, sizeof(I_Block));
-    b->color = Purple;
+    b->color = PURPLE;
     b->type = T;
 }
 
 void spawn_Z(Block* b) {
     memcpy(b->cells, Z_Block, sizeof(I_Block));
-    b->color = Red;
+    b->color = RED;
     b->type = Z;
 }
 
 void spawn_S(Block* b) {
     memcpy(b->cells, S_Block, sizeof(I_Block));
-    b->color = Green;
+    b->color = GREEN;
     b->type = S;
 }
 
 void spawn_J(Block* b) {
     memcpy(b->cells, J_Block, sizeof(I_Block));
-    b->color = Blue;
+    b->color = BLUE;
     b->type = J;
 }
 
 void spawn_L(Block* b) {
     memcpy(b->cells, L_Block, sizeof(I_Block));
-    b->color = White;
+    b->color = WHITE;
     b->type = L;
 }
