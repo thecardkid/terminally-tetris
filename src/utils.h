@@ -43,7 +43,7 @@ int in_grid(int x, int y);
  *
  * Not defined as enum class to allow implicit casting to int
  */
-typedef enum {Empty, Cyan, Blue, White, Yellow, Green, Purple, Red} BlockColor;
+typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED} BlockColor;
 
 /*
  * Taken from http://tetris.wikia.com/wiki/Tetromino

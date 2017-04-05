@@ -37,7 +37,7 @@ void act_on_user_input(char user_input, Movement* m, int* frame_counter);
 /*
  * Most basic movement in the game, attempt to move block down by one step. If
  * this movement is obstructed, return 0.
- * 
+ *
  * Moves have a set ordering in which they will be executed in the case that
  * some combination of movements is impossible.
  *  1: vertical move

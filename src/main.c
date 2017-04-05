@@ -12,7 +12,7 @@
 void initialize_grid(int grid[GRID_W][GRID_H]) {
     for (int x=0; x<GRID_W; x++) {
         for (int y=0; y<GRID_H; y++) {
-            grid[x][y] = Empty;
+            grid[x][y] = EMPTY;
         }
     }
 }

@@ -8,7 +8,7 @@ void shift_rows_down(int grid[GRID_W][GRID_H]) {
         // to count how many times we need to shift populated
         // rows downwards
         for (c=0; c<GRID_W; c++) {
-            if (grid[c][r] != Empty) {
+            if (grid[c][r] != EMPTY) {
                 break;
             }
         }
@@ -21,7 +21,7 @@ void shift_rows_down(int grid[GRID_W][GRID_H]) {
             // beneath it, perform shift
             for (c=0; c<GRID_W; c++) {
                 grid[c][r+shift] = grid[c][r];
-                grid[c][r] = Empty;
+                grid[c][r] = EMPTY;
             }
         }
     }
@@ -29,7 +29,7 @@ void shift_rows_down(int grid[GRID_W][GRID_H]) {
 
 int is_empty(int grid[GRID_W][GRID_H]) {
     for (int i=0; i<GRID_W; i++) {
-        if (grid[i][GRID_H-1] != Empty) {
+        if (grid[i][GRID_H-1] != EMPTY) {
             return 0;
         }
     }
@@ -60,7 +60,7 @@ void score_rows(State* s, int rows_cleared) {
 
 void clear_row(int r, State* s) {
     for (int c=0; c<GRID_W; c++) {
-        s->grid[c][r] = Empty;
+        s->grid[c][r] = EMPTY;
     }
 }
 
@@ -73,7 +73,7 @@ void clear_rows(State* s) {
         // for each row that the block occupies
         r = s->block->y + s->block->cells[i][1];
         for (c=0; c<GRID_W; c++) {
-            if (s->grid[c][r] == Empty) {
+            if (s->grid[c][r] == EMPTY) {
                 break;
             }
         }

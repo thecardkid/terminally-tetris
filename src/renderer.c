@@ -9,13 +9,13 @@ void set_up_screen() {
     curs_set(false);
 
     // Set up color schemes for each block
-    init_pair(Cyan, COLOR_CYAN, COLOR_BLACK);
-    init_pair(Blue, COLOR_BLUE, COLOR_BLACK);
-    init_pair(White, COLOR_WHITE, COLOR_BLACK);
-    init_pair(Yellow, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(Green, COLOR_GREEN, COLOR_BLACK);
-    init_pair(Purple, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(Red, COLOR_RED, COLOR_BLACK);
+    init_pair(CYAN, COLOR_CYAN, COLOR_BLACK);
+    init_pair(BLUE, COLOR_BLUE, COLOR_BLACK);
+    init_pair(WHITE, COLOR_WHITE, COLOR_BLACK);
+    init_pair(YELLOW, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(GREEN, COLOR_GREEN, COLOR_BLACK);
+    init_pair(PURPLE, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(RED, COLOR_RED, COLOR_BLACK);
 }
 
 void display_grid(int grid[GRID_W][GRID_H]) {
@@ -24,7 +24,7 @@ void display_grid(int grid[GRID_W][GRID_H]) {
     for (int y = OFFSET; y < GRID_H; y++) {
         mvprintw(y-OFFSET, 0, "|");
         for (int x = 0; x < GRID_W; x++) {
-            if ((block = grid[x][y]) != Empty) {
+            if ((block = grid[x][y]) != EMPTY) {
                 attron(COLOR_PAIR(block));
                 printw("@");
                 attroff(COLOR_PAIR(block));
