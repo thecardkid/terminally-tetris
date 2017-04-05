@@ -45,43 +45,43 @@ int spawn_space_available(State* s) {
 }
 
 void spawn_I(Block* b) {
-    memcpy(b->cells, I_Block, sizeof(I_Block));
+    copy_cells(I, b->cells);
     b->color = CYAN;
     b->type = I;
 }
 
 void spawn_O(Block* b) {
-    memcpy(b->cells, O_Block, sizeof(I_Block));
+    copy_cells(O, b->cells);
     b->color = YELLOW;
     b->type = O;
 }
 
 void spawn_T(Block* b) {
-    memcpy(b->cells, T_Block, sizeof(I_Block));
+    copy_cells(T, b->cells);
     b->color = PURPLE;
     b->type = T;
 }
 
 void spawn_Z(Block* b) {
-    memcpy(b->cells, Z_Block, sizeof(I_Block));
+    copy_cells(Z, b->cells);
     b->color = RED;
     b->type = Z;
 }
 
 void spawn_S(Block* b) {
-    memcpy(b->cells, S_Block, sizeof(I_Block));
+    copy_cells(S, b->cells);
     b->color = GREEN;
     b->type = S;
 }
 
 void spawn_J(Block* b) {
-    memcpy(b->cells, J_Block, sizeof(I_Block));
+    copy_cells(J, b->cells);
     b->color = BLUE;
     b->type = J;
 }
 
 void spawn_L(Block* b) {
-    memcpy(b->cells, L_Block, sizeof(I_Block));
+    copy_cells(L, b->cells);
     b->color = WHITE;
     b->type = L;
 }
