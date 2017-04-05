@@ -7,6 +7,7 @@
 
 #include "utils.h"
 
+void copy_cells(BlockType t, int cells[4][2]);
 BlockType spawn(Block* b, BlockType t);
 void spawn_I(Block* b);
 void spawn_O(Block* b);

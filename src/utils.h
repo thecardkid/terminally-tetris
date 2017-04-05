@@ -43,7 +43,7 @@ typedef enum {Empty, Cyan, Blue, White, Yellow, Green, Purple, Red} BlockColor;
 /*
  * Taken from http://tetris.wikia.com/wiki/Tetromino
  */
-typedef enum {I, O, T, Z, S, J, L} BlockType;
+typedef enum {I, J, L, O, S, T, Z} BlockType;
 
 /*
  * Define rotation parameter
