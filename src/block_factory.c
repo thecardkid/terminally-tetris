@@ -25,8 +25,13 @@ void spawn(State* s) {
     s->block->x = SPAWN_X;
     s->block->y = 1;
 
+    int n;
+
     if (spawn_space_available(s)) {
-        s->next = rand() % NUM_BLOCKS;
+        while ((n = rand() % NUM_BLOCKS) == s->next) {
+            n = rand() % NUM_BLOCKS;
+        }
+        s->next = n;
     } else {
         s->mode = SHUTDOWN;
     }
