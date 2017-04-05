@@ -30,6 +30,19 @@
 int is_user_input();
 
 /*
+ * Default text for when boss mode is incurred and
+ * `popen` fails
+ */
+void default_boss_mode();
+
+/*
+ * Pipes the output of `ls -l /etc/` to a file stream
+ * and then to the ncurses window, making it look like
+ * you were doing work
+ */
+void boss_mode();
+
+/*
  * Modify the state of the game based on user input
  */
 void act_on_user_input(char user_input, Movement* m, int* frame_counter);
