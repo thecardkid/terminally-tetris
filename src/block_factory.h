@@ -8,7 +8,15 @@
 #include "utils.h"
 
 void copy_cells(BlockType t, int cells[4][2]);
-BlockType spawn(Block* b, BlockType t);
+void spawn(State* s);
+
+/*
+ * Make sure that all cells occupied by the block are empty.
+ * Perform this check immediately after spawning a block so that blocks do not
+ * spawn in eachother.
+ */
+int spawn_space_available(State* s);
+
 void spawn_I(Block* b);
 void spawn_O(Block* b);
 void spawn_T(Block* b);
