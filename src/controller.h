@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
+#include <signal.h>
 
 #include "utils.h"
 #include "renderer.h"
@@ -20,6 +21,34 @@
 #define US_DELAY US/TICK_RATE // Delay in microseconds to achieve tick rate
 #define MOVE_RATE 20 // Steps per movement
 
+/*
+ * Increment an integer by one without surpassing a specified maximum
+ *
+ * @param num: the integer to increment
+ * @param max: the maximum value that the integer can be incremented to
+ */
+void increment_with_max(int* num, int max);
+
+/*
+ * Decrement an integer by one without surpassing a specified minimum
+ *
+ * @param num: the integer to deccrement
+ * @param max: the minimum value that the integer can be deccremented to
+ */
+void decrement_with_min(int* num, int min);
+
+/*
+ * Render a user-scrollable menu with specified characteristics
+ *
+ * @param menu_title: the title line of the menu
+ * @param menu_items: an array of items the user can select from
+ * @param num_menu_items: the number of items in the menu_items array
+ * @param curr_selection: the index of the current user-selected item
+ * @param row: row where the menu should render (left-most row)
+ * @param col: column where the menu should render (upper-most column)
+ */
+void render_menu(const char* title, const char* items[], int num_items,
+        int curr_selection, int row, int col);
 
 /*
  * Modify stdin, check for valid user input, and revert stdin to original state.
@@ -41,6 +70,17 @@ void default_boss_mode();
  * you were doing work
  */
 void boss_mode();
+
+/*
+ * Pauses the game
+ */
+void pause_mode();
+
+/*
+ * Renders a menu that allows the player to clarify if they want to quit.
+ * Quits or resumes based on the user's menu selection.
+ */
+void quit_mode();
 
 /*
  * Modify the state of the game based on user input

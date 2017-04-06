@@ -1,5 +1,37 @@
 #include "controller.h"
 
+void increment_with_max(int* num, int max) {
+    (*num)++;
+    if (*num > max) {
+        *num = max;
+    }
+}
+
+void decrement_with_min(int* num, int min) {
+    (*num)--;
+    if (*num < min) {
+        *num = min;
+    }
+}
+
+void render_menu(const char* title, const char* items[], int num_items,
+        int curr_selection, int row, int col) {
+    // Render the menu title
+    mvprintw(col, row, title);
+
+    for (int i=0; i<num_items; i++) {
+        // Highlight the currently selected menu item
+        if (i == curr_selection) {
+            attron(A_STANDOUT);
+        }
+
+        // Render each menu item
+        mvprintw(col+1+i, row+1, "-");
+        mvprintw(col+1+i, row+2, items[i]);
+        attroff(A_STANDOUT);
+    }
+}
+
 int is_user_input() {
     struct termios old_term, new_term;
     int old_fd;
@@ -84,6 +116,53 @@ void boss_mode() {
     clear();
 }
 
+void pause_mode() {
+    mvprintw(20, GRID_W+5, "*** PAUSED ***");
+
+    // wait until game resumed
+    while (getch() != RESUME_KEY);
+    clear();
+}
+
+void quit_mode() {
+    const char* menu_title = "*** QUIT? ***";
+    const char* menu_items[] = { "yes", "no" };
+    const int num_menu_items = 2;
+    int curr_selection = 0;
+
+    // Until the user presses the select key
+    char user_input;
+    while (user_input != SELECT_KEY) {
+        // Non-blocking user-input
+        timeout(10);
+        user_input = getch();
+
+        // Navigate through the menu based on user-input
+        switch (user_input) {
+            case UP_KEY:
+                decrement_with_min(&curr_selection, 0);
+                break;
+            case DOWN_KEY:
+                increment_with_max(&curr_selection, num_menu_items-1);
+                break;
+        }
+
+        // Render the menu
+        render_menu(menu_title, menu_items, num_menu_items, curr_selection,
+                GRID_W+5, 20);
+    }
+
+    // Take action based on what the user selected from the menu
+    switch (curr_selection) {
+        case 0: // yes, quit
+            kill(getpid(), SIGINT);
+            break;
+        case 1: // no, do not quit
+            clear();
+            break;
+    }
+}
+
 void act_on_user_input(
     char user_input,
     Movement* m,
@@ -118,10 +197,10 @@ void act_on_user_input(
             }
             break;
         case PAUSE_KEY: // pause the game
-            // TODO: @skelly pause the game
+            pause_mode();
             break;
         case QUIT_KEY: // quit the game
-            // TODO: @skelly quit the game
+            quit_mode();
             break;
         case BOSS_MODE_KEY: // set the game to boss mode
             boss_mode();

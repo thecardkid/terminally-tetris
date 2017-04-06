@@ -50,6 +50,7 @@ int display_controls(int row) {
     mvprintw(row++, GRID_W+5, "Quit ---------------- %c", QUIT_KEY);
     mvprintw(row++, GRID_W+5, "Boss Mode ----------- %c", BOSS_MODE_KEY);
     mvprintw(row++, GRID_W+5, "Resume -------------- %c", RESUME_KEY);
+    mvprintw(row++, GRID_W+5, "Select -------------- %s", "ENTER");
     return row;
 }
 

@@ -23,6 +23,7 @@
 #define QUIT_KEY 'q'
 #define BOSS_MODE_KEY 'b'
 #define RESUME_KEY 'r'
+#define SELECT_KEY '\n'
 
 extern const int I_Block[4][2];
 extern const int O_Block[4][2];
