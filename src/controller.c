@@ -61,7 +61,7 @@ void default_boss_mode() {
 }
 
 void boss_mode() {
-    clear();
+    erase();
 
     FILE *fp;
     char path[1035];
@@ -81,7 +81,7 @@ void boss_mode() {
 
     // wait until game resumed
     while (getch() != RESUME_KEY);
-    clear();
+    erase();
 }
 
 void act_on_user_input(
@@ -280,7 +280,7 @@ void begin_game(State* s) {
         }
 
         // Rendering loop
-        clear();
+        erase();
         render(s);
         refresh();
 
@@ -289,7 +289,7 @@ void begin_game(State* s) {
     }
 
     // Shutdown procedure
-    clear();
+    erase();
     refresh();
     // TODO: @dbishop terminal state not resetting properly, input not visible
 }
