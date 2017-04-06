@@ -37,6 +37,21 @@ int is_empty(int grid[GRID_W][GRID_H]) {
     return 1;
 }
 
+void compute_heights(State* s) {
+    int h;
+
+    // recompute row heights
+    for (int c=0; c<GRID_W; c++) {
+        h = 0;
+        for (int r=GRID_H-1; r>=0; r--) {
+            if (s->grid[c][r] != EMPTY) {
+                h = GRID_H - r;
+            }
+        }
+        s->heights[c] = h;
+    }
+}
+
 void score_block(State* s) {
     s->score += 10 * (s->level);
 }
@@ -95,5 +110,6 @@ void clear_rows(State* s) {
 void update_score(State* s) {
     score_block(s);
     clear_rows(s);
+    compute_heights(s);
 }
 
