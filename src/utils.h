@@ -74,6 +74,7 @@ typedef struct {
 
 typedef struct {
     int grid[GRID_W][GRID_H];
+    int heights[GRID_W];
     int score;
     int level;
     Gamemode mode; // 1: Game in progress 0: Game over
