@@ -14,24 +14,6 @@ void decrement_with_min(int* num, int min) {
     }
 }
 
-void render_menu(const char* title, const char* items[], int num_items,
-        int curr_selection, int row, int col) {
-    // Render the menu title
-    mvprintw(col, row, title);
-
-    for (int i=0; i<num_items; i++) {
-        // Highlight the currently selected menu item
-        if (i == curr_selection) {
-            attron(A_STANDOUT);
-        }
-
-        // Render each menu item
-        mvprintw(col+1+i, row+1, "-");
-        mvprintw(col+1+i, row+2, items[i]);
-        attroff(A_STANDOUT);
-    }
-}
-
 int is_user_input() {
     struct termios old_term, new_term;
     int old_fd;
@@ -60,6 +42,31 @@ int is_user_input() {
     }
 
     return 0;
+}
+
+void run_mode(Movement* net_move, State* s, int* frame_counter) {
+    (*frame_counter)++;
+    // Collect desired total movement in this frame
+    aggregate_movement(net_move, s, frame_counter);
+
+    // Perform movement
+    if (!move_block(s, net_move)) {
+        // Block was unable to make any valid downwards move.
+
+        // Perform row clear if needed and update score
+        update_score(s);
+
+        // Spawn a new block
+        spawn(s);
+    }
+
+    // Rendering loop
+    clear();
+    render(s);
+    refresh();
+
+    // Assuming execution of loop takes negligible time
+    usleep(US_DELAY);
 }
 
 void default_boss_mode() {
@@ -116,15 +123,15 @@ void boss_mode() {
     clear();
 }
 
-void pause_mode() {
+void pause_mode(State* s) {
     mvprintw(20, GRID_W+5, "*** PAUSED ***");
 
     // wait until game resumed
     while (getch() != RESUME_KEY);
-    clear();
+    s->mode = RUNNING;
 }
 
-void quit_mode() {
+void confirm_quit_mode(State* s) {
     const char* menu_title = "*** QUIT? ***";
     const char* menu_items[] = { "yes", "no" };
     const int num_menu_items = 2;
@@ -155,18 +162,24 @@ void quit_mode() {
     // Take action based on what the user selected from the menu
     switch (curr_selection) {
         case 0: // yes, quit
-            kill(getpid(), SIGINT);
+            s->mode = SHUTDOWN;
             break;
         case 1: // no, do not quit
-            clear();
+            s->mode = RUNNING;
             break;
     }
+}
+
+void shutdown_mode() {
+    endwin();
+    exit(0);
 }
 
 void act_on_user_input(
     char user_input,
     Movement* m,
-    int* frame_counter) {
+    int* frame_counter,
+    State* s) {
 
     int frames_until_next_move;
     switch(user_input) {
@@ -197,13 +210,13 @@ void act_on_user_input(
             }
             break;
         case PAUSE_KEY: // pause the game
-            pause_mode();
+            s->mode = PAUSED;
             break;
-        case QUIT_KEY: // quit the game
-            quit_mode();
+        case QUIT_KEY: // confirm the user wants to quit
+            s->mode = CONFIRM_QUIT;
             break;
         case BOSS_MODE_KEY: // set the game to boss mode
-            boss_mode();
+            s->mode = BOSS;
             break;
     }
 }
@@ -328,7 +341,7 @@ void aggregate_movement(Movement* m, State* s, int* frame_counter) {
     if (is_user_input()) {
         // The user has pressed a key, take appropriate action
         char user_input = getchar();
-        act_on_user_input(user_input, m, frame_counter);
+        act_on_user_input(user_input, m, frame_counter, s);
     }
 }
 
@@ -342,33 +355,24 @@ void begin_game(State* s) {
     int frame_counter = 0;
     Movement* net_move = malloc(sizeof(Movement));
 
-    while (s->mode == RUNNING) {
-        frame_counter++;
-        // Collect desired total movement in this frame
-        aggregate_movement(net_move, s, &frame_counter);
-
-        // Perform movement
-        if (!move_block(s, net_move)) {
-            // Block was unable to make any valid downwards move.
-
-            // Perform row clear if needed and update score
-            update_score(s);
-
-            // Spawn a new block
-            spawn(s);
+    while (1) {
+        switch (s->mode) {
+            case RUNNING:
+                run_mode(net_move, s, &frame_counter);
+                break;
+            case BOSS:
+                boss_mode();
+                break;
+            case PAUSED:
+                pause_mode(s);
+                break;
+            case CONFIRM_QUIT:
+                confirm_quit_mode(s);
+                break;
+            case SHUTDOWN:
+                shutdown_mode();
+                break;
         }
-
-        // Rendering loop
-        clear();
-        render(s);
-        refresh();
-
-        // Assuming execution of loop takes negligible time
-        usleep(US_DELAY);
     }
 
-    // Shutdown procedure
-    clear();
-    refresh();
-    // TODO: @dbishop terminal state not resetting properly, input not visible
 }

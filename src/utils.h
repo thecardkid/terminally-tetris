@@ -9,6 +9,7 @@
 #define OFFSET 2
 #define SPAWN_X 4
 #define NUM_BLOCKS 7
+#define MENU_COL GRID_W+5
 
 /*
  * Controls
@@ -60,7 +61,7 @@ typedef enum {LEFT, NO_ROTATE, RIGHT} Rotation;
 /*
  * Modes that the game can be in
  */
-typedef enum {RUNNING, PAUSED, SHUTDOWN, BOSS} Gamemode;
+typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, BOSS} Gamemode;
 
 /*
   Representation of generic Tetris block

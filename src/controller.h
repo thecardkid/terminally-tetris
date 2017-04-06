@@ -38,25 +38,17 @@ void increment_with_max(int* num, int max);
 void decrement_with_min(int* num, int min);
 
 /*
- * Render a user-scrollable menu with specified characteristics
- *
- * @param menu_title: the title line of the menu
- * @param menu_items: an array of items the user can select from
- * @param num_menu_items: the number of items in the menu_items array
- * @param curr_selection: the index of the current user-selected item
- * @param row: row where the menu should render (left-most row)
- * @param col: column where the menu should render (upper-most column)
- */
-void render_menu(const char* title, const char* items[], int num_items,
-        int curr_selection, int row, int col);
-
-/*
  * Modify stdin, check for valid user input, and revert stdin to original state.
  *
  * termios - http://man7.org/linux/man-pages/man3/tcsetattr.3.html
  * fcntl - http://man7.org/linux/man-pages/man2/fcntl.2.html
 */
 int is_user_input();
+
+/*
+ * The main run state of the game.
+ */
+void run_mode(Movement* net_move, State* s, int* frame_counter);
 
 /*
  * Default text for when boss mode is incurred and
@@ -74,18 +66,24 @@ void boss_mode();
 /*
  * Pauses the game
  */
-void pause_mode();
+void pause_mode(State* s);
 
 /*
  * Renders a menu that allows the player to clarify if they want to quit.
  * Quits or resumes based on the user's menu selection.
  */
-void quit_mode();
+void confirm_quit_mode(State* s);
+
+/*
+ * Cleanly shutdown and exit the game
+ */
+void shutdown_mode();
 
 /*
  * Modify the state of the game based on user input
  */
-void act_on_user_input(char user_input, Movement* m, int* frame_counter);
+void act_on_user_input(char user_input, Movement* m, int* frame_counter,
+        State* s);
 
 /*
  * Most basic movement in the game, attempt to move block down by one step. If
