@@ -42,6 +42,22 @@ extern const int rotation_matrix_L[2][2];
 int in_grid(int x, int y);
 
 /*
+ * Increment an integer by one without surpassing a specified maximum
+ *
+ * @param num: the integer to increment
+ * @param max: the maximum value that the integer can be incremented to
+ */
+void increment_with_max(int* num, int max);
+
+/*
+ * Decrement an integer by one without surpassing a specified minimum
+ *
+ * @param num: the integer to deccrement
+ * @param max: the minimum value that the integer can be deccremented to
+ */
+void decrement_with_min(int* num, int min);
+
+/*
  * Taken from https://i.stack.imgur.com/JLRFu.png
  *
  * Not defined as enum class to allow implicit casting to int

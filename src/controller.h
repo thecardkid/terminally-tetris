@@ -22,22 +22,6 @@
 #define MOVE_RATE 20 // Steps per movement
 
 /*
- * Increment an integer by one without surpassing a specified maximum
- *
- * @param num: the integer to increment
- * @param max: the maximum value that the integer can be incremented to
- */
-void increment_with_max(int* num, int max);
-
-/*
- * Decrement an integer by one without surpassing a specified minimum
- *
- * @param num: the integer to deccrement
- * @param max: the minimum value that the integer can be deccremented to
- */
-void decrement_with_min(int* num, int min);
-
-/*
  * Modify stdin, check for valid user input, and revert stdin to original state.
  *
  * termios - http://man7.org/linux/man-pages/man3/tcsetattr.3.html

@@ -1,19 +1,5 @@
 #include "controller.h"
 
-void increment_with_max(int* num, int max) {
-    (*num)++;
-    if (*num > max) {
-        *num = max;
-    }
-}
-
-void decrement_with_min(int* num, int min) {
-    (*num)--;
-    if (*num < min) {
-        *num = min;
-    }
-}
-
 int is_user_input() {
     struct termios old_term, new_term;
     int old_fd;

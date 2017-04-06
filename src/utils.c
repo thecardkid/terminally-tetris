@@ -15,3 +15,17 @@ int in_grid(int x, int y) {
     if (x < 0 || x >= GRID_W || y < 0 || y >= GRID_H) return 0;
     return 1;
 }
+
+void increment_with_max(int* num, int max) {
+    (*num)++;
+    if (*num > max) {
+        *num = max;
+    }
+}
+
+void decrement_with_min(int* num, int min) {
+    (*num)--;
+    if (*num < min) {
+        *num = min;
+    }
+}
