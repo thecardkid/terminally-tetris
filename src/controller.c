@@ -30,6 +30,60 @@ int is_user_input() {
     return 0;
 }
 
+void default_boss_mode() {
+    printw(
+        "user@workstation-312:~/Developer/project $ gem install heroku --no-redoc --no-ri\n"
+        "ERROR:  While executing gem ... (Errno::EACCES)\n"
+        "    Permission denied - /Users/user/.gem/ruby/1.9.1/cache/heroku-1.9.13.gem\n"
+        "\n"
+        "user@workstation-312:~/Developer/project $ sudo !!\n"
+        "sudo gem install heroku --no-redoc --no-ri\n"
+        "Successfully installed heroku-1.9.13\n"
+        "1 gem installed\n"
+        "\n"
+        "user@workstation-312:~/Developer/project $ ls -l\n"
+        "total 528\n"
+        "drwxr-xr-x    2 user users   4096 Jun  9 17:05 .\n"
+        "drwxr-xr-x    4 user users   4096 Jun 10 09:52 ..\n"
+        "-rw-r--r--@   1 user users  88583 Jun  9 14:13 .babelrc\n"
+        "-rw-r--r--    1 user users  65357 Jun  9 15:40 .git/\n"
+        "-rw-r--r--    1 user users   4469 Jun  9 16:17 .gitignore\n"
+        "-rw-r--r--    1 user users    455 Jun  9 16:17 index.js\n"
+        "-rw-r--r--    1 user users   2516 Jun  9 16:17 node_modules/\n"
+        "-rw-r--r--    1 user users    183 Jun  9 16:17 package.json\n"
+        "-rw-r--r--    1 user users 349607 Jun  9 16:17 public/\n"
+        "-rw-r--r--    1 user users      0 Jun  9 16:17 src/\n"
+        "-rw-r--r--    1 user users   9284 Jun  9 17:05 webpack.config.js\n"
+        "-rw-r--r--    1 user users    229 Jun  9 16:17 tetris.save\n"
+        "\n"
+        "user@workstation-312:~/Developer/project $ "
+    );
+}
+
+void boss_mode() {
+    clear();
+
+    FILE *fp;
+    char path[1035];
+
+    // pipe command into a temp file stream
+    fp = popen("/bin/ls -l /etc/", "r");
+    if (fp == NULL) {
+        // print default text if error happened
+        default_boss_mode();
+    } else {
+        while (fgets(path, sizeof(path)-1, fp) != NULL) {
+            printw("%s", path);
+        }
+
+        pclose(fp);
+    }
+
+    // wait until game resumed
+    while (getch() != RESUME_KEY);
+    clear();
+}
+
 void act_on_user_input(
     char user_input,
     Movement* m,
@@ -70,7 +124,7 @@ void act_on_user_input(
             // TODO: @skelly quit the game
             break;
         case BOSS_MODE_KEY: // set the game to boss mode
-            // TODO: @skelly set the game to boss mode
+            boss_mode();
             break;
     }
 }
