@@ -17,16 +17,9 @@ void initialize_grid(int grid[GRID_W][GRID_H]) {
     }
 }
 
-void initialize_heights(int heights[GRID_W]) {
-    for (int i=0; i<GRID_W; i++) {
-        heights[i] = 0;
-    }
-}
-
 State* create_game() {
     State* state = malloc(sizeof(State));
     initialize_grid(state->grid);
-    initialize_heights(state->heights);
     state->score = 0;
     // TODO @hnguyen accept command line argument for level
     state->level = 1;
