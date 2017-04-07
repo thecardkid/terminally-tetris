@@ -37,32 +37,11 @@ extern const int rotation_matrix_R[2][2];
 extern const int rotation_matrix_L[2][2];
 
 /*
- * Checks whether coordinate is inside playable area
- */
-int in_grid(int x, int y);
-
-/*
- * Increment an integer by one without surpassing a specified maximum
- *
- * @param num: the integer to increment
- * @param max: the maximum value that the integer can be incremented to
- */
-void increment_with_max(int* num, int max);
-
-/*
- * Decrement an integer by one without surpassing a specified minimum
- *
- * @param num: the integer to deccrement
- * @param max: the minimum value that the integer can be deccremented to
- */
-void decrement_with_min(int* num, int min);
-
-/*
  * Taken from https://i.stack.imgur.com/JLRFu.png
  *
  * Not defined as enum class to allow implicit casting to int
  */
-typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED} BlockColor;
+typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED, GHOST} BlockColor;
 
 /*
  * Taken from http://tetris.wikia.com/wiki/Tetromino
@@ -84,8 +63,8 @@ typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, BOSS} Gamemode;
 */
 typedef struct {
     int cells[4][2];
-    int x;
-    int y;
+    int x, y;
+    int ghosty;
     BlockColor color;
     BlockType type;
 } Block;
@@ -109,5 +88,57 @@ typedef struct {
     int y;
     Rotation r;
 } Movement;
+
+/*
+ * Checks whether coordinate is inside playable area
+ */
+int in_grid(int x, int y);
+
+/*
+ * Set all cells occupied by playable block to EMPTY
+ */
+void clear_block(State* s);
+
+/*
+ * Set all cells occupied by playable block to the block's color
+ */
+void draw_block(State* s);
+
+/*
+ * Set all cells occupied by playable block's ghost to EMPTY
+ * Note: this implementation allows for overlap between playable block and
+ *  its ghost, so this method may clear some cells of the playable block.
+ */
+void clear_ghost(State* s);
+
+/*
+ * Set all cells occupied by the playable block's ghost to the GHOST color.
+ * Note: since the ghost and playable block may overlap, the order in which
+ *  their draw calls are made will determine which renders "ontop" of the other.
+ */
+void draw_ghost(State* s);
+
+/*
+ * Calculate and assign correct position for the ghost of the playable block.
+ * The correct position of the ghost is always the furthest down the block may
+ * travel before hitting any other block.
+ */
+void project_ghost(State* s);
+
+/*
+ * Increment an integer by one without surpassing a specified maximum
+ *
+ * @param num: the integer to increment
+ * @param max: the maximum value that the integer can be incremented to
+ */
+void increment_with_max(int* num, int max);
+
+/*
+ * Decrement an integer by one without surpassing a specified minimum
+ *
+ * @param num: the integer to deccrement
+ * @param max: the minimum value that the integer can be deccremented to
+ */
+void decrement_with_min(int* num, int min);
 
 #endif

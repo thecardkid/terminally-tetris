@@ -16,6 +16,7 @@ void set_up_screen() {
     init_pair(GREEN, COLOR_GREEN, COLOR_BLACK);
     init_pair(PURPLE, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(RED, COLOR_RED, COLOR_BLACK);
+    init_pair(GHOST, COLOR_BLACK, COLOR_WHITE);
 }
 
 void display_grid(int grid[GRID_W][GRID_H]) {
@@ -26,7 +27,13 @@ void display_grid(int grid[GRID_W][GRID_H]) {
         for (int x = 0; x < GRID_W; x++) {
             if ((block = grid[x][y]) != EMPTY) {
                 attron(COLOR_PAIR(block));
-                printw("@");
+
+                if (block == GHOST) {
+                    printw(" ");
+                } else {
+                    printw("@");
+                }
+
                 attroff(COLOR_PAIR(block));
             } else {
                 printw(" ");

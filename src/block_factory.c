@@ -32,6 +32,7 @@ void spawn(State* s) {
             n = rand() % NUM_BLOCKS;
         }
         s->next = n;
+        project_ghost(s);
     } else {
         s->mode = SHUTDOWN;
     }
