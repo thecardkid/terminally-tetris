@@ -90,7 +90,7 @@ void default_boss_mode() {
 }
 
 void boss_mode(State* s) {
-    clear();
+    erase();
 
     FILE *fp;
     char path[1035];
@@ -364,5 +364,4 @@ void begin_game(State* s) {
                 break;
         }
     }
-
 }

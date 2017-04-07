@@ -16,6 +16,11 @@ void shift_rows_down(int grid[GRID_W][GRID_H]);
 int is_empty(int grid[GRID_W][GRID_H]);
 
 /*
+ * Recompute the height of each column
+ */
+void compute_heights(State* s);
+
+/*
  * Score a block when it is placed
  */
 void score_block(State* s);
