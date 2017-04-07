@@ -30,6 +30,10 @@ int is_user_input() {
     return 0;
 }
 
+void wait_until_resume() {
+    while (getch() != RESUME_KEY);
+}
+
 void run_mode(Movement* net_move, State* s, int* frame_counter) {
     (*frame_counter)++;
     // Collect desired total movement in this frame
@@ -85,7 +89,7 @@ void default_boss_mode() {
     );
 }
 
-void boss_mode() {
+void boss_mode(State* s) {
     clear();
 
     FILE *fp;
@@ -104,16 +108,16 @@ void boss_mode() {
         pclose(fp);
     }
 
-    // wait until game resumed
-    while (getch() != RESUME_KEY);
-    clear();
+    wait_until_resume();
+
+    s->mode = RUNNING;
 }
 
 void pause_mode(State* s) {
-    mvprintw(20, GRID_W+5, "*** PAUSED ***");
+    mvprintw(20, MENU_COL, "*** PAUSED ***");
 
-    // wait until game resumed
-    while (getch() != RESUME_KEY);
+    wait_until_resume(s);
+
     s->mode = RUNNING;
 }
 
@@ -347,7 +351,7 @@ void begin_game(State* s) {
                 run_mode(net_move, s, &frame_counter);
                 break;
             case BOSS:
-                boss_mode();
+                boss_mode(s);
                 break;
             case PAUSED:
                 pause_mode(s);

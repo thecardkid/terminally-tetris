@@ -30,6 +30,11 @@
 int is_user_input();
 
 /*
+ * Pauses execution until the user presses the resume key.
+ */
+void wait_until_resume();
+
+/*
  * The main run state of the game.
  */
 void run_mode(Movement* net_move, State* s, int* frame_counter);
@@ -45,7 +50,7 @@ void default_boss_mode();
  * and then to the ncurses window, making it look like
  * you were doing work
  */
-void boss_mode();
+void boss_mode(State* s);
 
 /*
  * Pauses the game
