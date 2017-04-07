@@ -116,7 +116,7 @@ void boss_mode(State* s) {
 void pause_mode(State* s) {
     mvprintw(20, MENU_COL, "*** PAUSED ***");
 
-    wait_until_resume(s);
+    wait_until_resume();
 
     s->mode = RUNNING;
 }
