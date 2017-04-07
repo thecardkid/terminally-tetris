@@ -15,3 +15,27 @@ int in_grid(int x, int y) {
     if (x < 0 || x >= GRID_W || y < 0 || y >= GRID_H) return 0;
     return 1;
 }
+
+void project_ghost(State* s) {
+    int x,
+        y = s->block->y + 3;
+    int i;
+    int r, c;
+    int has_space = 1;
+
+    for (int h=y; h<GRID_H-OFFSET; h++) {
+        x++; y++;
+        for (i=0; i<4; i++) {
+            r = y + s->block->cells[i][1];
+            x = s->block->x + s->block->cells[i][0];
+            has_space = (s->grid[c][r] == EMPTY) && has_space;
+        }
+
+        if (!has_space) {
+            break;
+        }
+    }
+
+    s->block->ghostx = s->block->x;
+    s->block->ghosty = y-1;
+}

@@ -156,7 +156,7 @@ int move_block(State* s, Movement* m) {
                 int y = s->block->cells[i][1] + s->block->y;
 
                 // Conditions where move is invalid
-                if (!in_grid(x, y + m->y) || s->grid[x][y + m->y] != EMPTY) {
+                if (!in_grid(x, y + m->y) || ((s->grid[x][y + m->y] != EMPTY) && (s->grid[x][y + m->y] != GHOST))) {
                     can_move_vert = 0;
                     break;
                 }
@@ -282,6 +282,7 @@ void begin_game(State* s) {
         // Rendering loop
         erase();
         render(s);
+        project_ghost(s);
         refresh();
 
         // Assuming execution of loop takes negligible time

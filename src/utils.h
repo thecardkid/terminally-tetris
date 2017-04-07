@@ -44,7 +44,7 @@ int in_grid(int x, int y);
  *
  * Not defined as enum class to allow implicit casting to int
  */
-typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED} BlockColor;
+typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED, GHOST} BlockColor;
 
 /*
  * Taken from http://tetris.wikia.com/wiki/Tetromino
@@ -66,8 +66,8 @@ typedef enum {RUNNING, PAUSED, SHUTDOWN, BOSS} Gamemode;
 */
 typedef struct {
     int cells[4][2];
-    int x;
-    int y;
+    int x, y;
+    int ghostx, ghosty;
     BlockColor color;
     BlockType type;
 } Block;
@@ -91,5 +91,7 @@ typedef struct {
     int y;
     Rotation r;
 } Movement;
+
+void project_ghost(State* s);
 
 #endif

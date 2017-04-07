@@ -16,6 +16,21 @@ void set_up_screen() {
     init_pair(GREEN, COLOR_GREEN, COLOR_BLACK);
     init_pair(PURPLE, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(RED, COLOR_RED, COLOR_BLACK);
+    init_pair(GHOST, COLOR_BLACK, COLOR_WHITE);
+}
+
+void display_ghost(State* s) {
+    int x = s->block->x,
+        y = s->block->ghosty;
+    int r, c;
+
+    attron(COLOR_PAIR(GHOST));
+    for (int i=0; i<4; i++) {
+        r = y + s->block->cells[i][1];
+        c = x + s->block->cells[i][0];
+        mvprintw(y, c+1, "@");
+    }
+    attroff(COLOR_PAIR(GHOST));
 }
 
 void display_grid(int grid[GRID_W][GRID_H]) {
@@ -80,9 +95,11 @@ void render(State* state) {
     int row = 1;
 
     display_grid(state->grid);
+    display_ghost(state);
     row = display_controls(row);
     row++; // blank line
     mvprintw(row++, GRID_W+5, "SCORE: %d", state->score);
+    mvprintw(row++, GRID_W+5, "X: %d, Y: %d, GHOSTX: %d, GHOSTY: %d", state->block->x, state->block->y, state->block->ghostx, state->block->ghosty);
     row++; // blank line
 
     if (state->level < 5) {
