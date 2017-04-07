@@ -90,7 +90,7 @@ void default_boss_mode() {
 }
 
 void boss_mode(State* s) {
-    erase();
+    clear();
 
     FILE *fp;
     char path[1035];
