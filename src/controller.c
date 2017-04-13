@@ -53,7 +53,6 @@ void run_mode(Movement* net_move, State* s, int* frame_counter) {
     // Rendering loop
     clear();
     render(s);
-    project_ghost(s);
     refresh();
 
     // Assuming execution of loop takes negligible time
@@ -311,6 +310,7 @@ int move_block(State* s, Movement* m) {
         int y = s->block->cells[i][1] + s->block->y;
 
         s->grid[x][y] = s->block->color;
+        project_ghost(s);
     }
 
     return can_move_vert;

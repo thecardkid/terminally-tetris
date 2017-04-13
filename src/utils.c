@@ -16,28 +16,36 @@ int in_grid(int x, int y) {
     return 1;
 }
 
-void project_ghost(State* s) {
-    int x,
-        y = s->block->y + 3;
-    int i;
+int block_fits(int x, int y, State* s) {
     int r, c;
-    int has_space = 1;
 
-    for (int h=y; h<GRID_H-OFFSET; h++) {
-        x++; y++;
-        for (i=0; i<4; i++) {
-            r = y + s->block->cells[i][1];
-            x = s->block->x + s->block->cells[i][0];
-            has_space = (s->grid[c][r] == EMPTY) && has_space;
-        }
+    for (int i=0; i<4; i++) {
+        c = x + s->block->cells[i][0];
+        r = y + s->block->cells[i][1];
 
-        if (!has_space) {
-            break;
+        if (s->grid[c][r] != EMPTY) {
+            return 0;
         }
     }
 
-    s->block->ghostx = s->block->x;
-    s->block->ghosty = y-1;
+    return 1;
+}
+
+void project_ghost(State* s) {
+    int ghost_y = s->block->y+2;
+
+    if (ghost_y > GRID_H-OFFSET) ghost_y = GRID_H-OFFSET;
+
+    while (ghost_y < GRID_H-OFFSET) {
+        if (!block_fits(s->block->x, ghost_y+1, s)) {
+            ghost_y--;
+            break;
+        }
+
+        ghost_y++;
+    }
+
+    s->block->ghosty = ghost_y-1;
 }
 
 void increment_with_max(int* num, int max) {

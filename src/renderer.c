@@ -23,12 +23,15 @@ void display_ghost(State* s) {
     int x = s->block->x,
         y = s->block->ghosty;
     int r, c;
+    int j = 25; //debug
 
     attron(COLOR_PAIR(GHOST));
     for (int i=0; i<4; i++) {
-        r = y + s->block->cells[i][1];
         c = x + s->block->cells[i][0];
-        mvprintw(y, c+1, "@");
+        r = y + s->block->cells[i][1];
+        mvprintw(r, c+1, " ");
+        //debugging
+        mvprintw(j+i, MENU_COL, "(%d, %d)", r, c);
     }
     attroff(COLOR_PAIR(GHOST));
 }
