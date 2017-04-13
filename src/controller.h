@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <fcntl.h>
+#include <signal.h>
 
 #include "utils.h"
 #include "renderer.h"
@@ -20,7 +21,6 @@
 #define US_DELAY US/TICK_RATE // Delay in microseconds to achieve tick rate
 #define MOVE_RATE 20 // Steps per movement
 
-
 /*
  * Modify stdin, check for valid user input, and revert stdin to original state.
  *
@@ -28,6 +28,16 @@
  * fcntl - http://man7.org/linux/man-pages/man2/fcntl.2.html
 */
 int is_user_input();
+
+/*
+ * Pauses execution until the user presses the resume key.
+ */
+void wait_until_resume();
+
+/*
+ * The main run state of the game.
+ */
+void run_mode(Movement* net_move, State* s, int* frame_counter);
 
 /*
  * Default text for when boss mode is incurred and
@@ -40,12 +50,29 @@ void default_boss_mode();
  * and then to the ncurses window, making it look like
  * you were doing work
  */
-void boss_mode();
+void boss_mode(State* s);
+
+/*
+ * Pauses the game
+ */
+void pause_mode(State* s);
+
+/*
+ * Renders a menu that allows the player to clarify if they want to quit.
+ * Quits or resumes based on the user's menu selection.
+ */
+void confirm_quit_mode(State* s);
+
+/*
+ * Cleanly shutdown and exit the game
+ */
+void shutdown_mode();
 
 /*
  * Modify the state of the game based on user input
  */
-void act_on_user_input(char user_input, Movement* m, int* frame_counter);
+void act_on_user_input(char user_input, Movement* m, int* frame_counter,
+        State* s);
 
 /*
  * Most basic movement in the game, attempt to move block down by one step. If

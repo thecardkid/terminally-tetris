@@ -54,17 +54,18 @@ void display_grid(int grid[GRID_W][GRID_H]) {
 }
 
 int display_controls(int row) {
-    mvprintw(row++, GRID_W+5, "CONTROLS:");
-    mvprintw(row++, GRID_W+5, "Up ------------------ %c", UP_KEY);
-    mvprintw(row++, GRID_W+5, "Down ---------------- %c", DOWN_KEY);
-    mvprintw(row++, GRID_W+5, "Left ---------------- %c", LEFT_KEY);
-    mvprintw(row++, GRID_W+5, "Right --------------- %c", RIGHT_KEY);
-    mvprintw(row++, GRID_W+5, "Clockwise ----------- %c", ROTATE_CW_KEY);
-    mvprintw(row++, GRID_W+5, "Counter-Clockwise --- %c", ROTATE_CCW_KEY);
-    mvprintw(row++, GRID_W+5, "Pause --------------- %c", PAUSE_KEY);
-    mvprintw(row++, GRID_W+5, "Quit ---------------- %c", QUIT_KEY);
-    mvprintw(row++, GRID_W+5, "Boss Mode ----------- %c", BOSS_MODE_KEY);
-    mvprintw(row++, GRID_W+5, "Resume -------------- %c", RESUME_KEY);
+    mvprintw(row++, MENU_COL, "CONTROLS:");
+    mvprintw(row++, MENU_COL, "Up ------------------ %c", UP_KEY);
+    mvprintw(row++, MENU_COL, "Down ---------------- %c", DOWN_KEY);
+    mvprintw(row++, MENU_COL, "Left ---------------- %c", LEFT_KEY);
+    mvprintw(row++, MENU_COL, "Right --------------- %c", RIGHT_KEY);
+    mvprintw(row++, MENU_COL, "Clockwise ----------- %c", ROTATE_CW_KEY);
+    mvprintw(row++, MENU_COL, "Counter-Clockwise --- %c", ROTATE_CCW_KEY);
+    mvprintw(row++, MENU_COL, "Pause --------------- %c", PAUSE_KEY);
+    mvprintw(row++, MENU_COL, "Quit ---------------- %c", QUIT_KEY);
+    mvprintw(row++, MENU_COL, "Boss Mode ----------- %c", BOSS_MODE_KEY);
+    mvprintw(row++, MENU_COL, "Resume -------------- %c", RESUME_KEY);
+    mvprintw(row++, MENU_COL, "Select -------------- %s", "ENTER");
     return row;
 }
 
@@ -75,7 +76,7 @@ void display_preview(int row, BlockType next) {
     int x, y;
 
     copy_cells(next, preview_cells);
-    mvprintw(row++, GRID_W+5, "NEXT:");
+    mvprintw(row++, MENU_COL, "NEXT:");
 
     attron(COLOR_PAIR(next+1));
 
@@ -85,10 +86,27 @@ void display_preview(int row, BlockType next) {
         preview[y+1][x+1] = '@';
     }
 
-    mvprintw(row++, GRID_W+5, preview[0]);
-    mvprintw(row++, GRID_W+5, preview[1]);
+    mvprintw(row++, MENU_COL, preview[0]);
+    mvprintw(row++, MENU_COL, preview[1]);
 
     attroff(COLOR_PAIR(next+1));
+}
+
+void render_menu(const char* title, const char* items[], int num_items,
+        int curr_selection, int row, int col) {
+    // Render the menu title
+    mvprintw(col, row, title);
+
+    for (int i=0; i<num_items; i++) {
+        // Highlight the currently selected menu item
+        if (i == curr_selection) {
+            attron(A_STANDOUT);
+        }
+
+        // Render each menu item
+        mvprintw(col+1+i, row+2, items[i]);
+        attroff(A_STANDOUT);
+    }
 }
 
 void render(State* state) {
@@ -98,8 +116,8 @@ void render(State* state) {
     display_ghost(state);
     row = display_controls(row);
     row++; // blank line
-    mvprintw(row++, GRID_W+5, "SCORE: %d", state->score);
-    mvprintw(row++, GRID_W+5, "X: %d, Y: %d, GHOSTX: %d, GHOSTY: %d", state->block->x, state->block->y, state->block->ghostx, state->block->ghosty);
+    mvprintw(row++, MENU_COL, "X: %d, Y: %d, GHOSTX: %d, GHOSTY: %d", state->block->x, state->block->y, state->block->ghostx, state->block->ghosty);
+    mvprintw(row++, MENU_COL, "SCORE: %d", state->score);
     row++; // blank line
 
     if (state->level < 5) {

@@ -39,3 +39,17 @@ void project_ghost(State* s) {
     s->block->ghostx = s->block->x;
     s->block->ghosty = y-1;
 }
+
+void increment_with_max(int* num, int max) {
+    (*num)++;
+    if (*num > max) {
+        *num = max;
+    }
+}
+
+void decrement_with_min(int* num, int min) {
+    (*num)--;
+    if (*num < min) {
+        *num = min;
+    }
+}

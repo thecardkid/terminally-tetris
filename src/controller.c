@@ -30,6 +30,36 @@ int is_user_input() {
     return 0;
 }
 
+void wait_until_resume() {
+    while (getch() != RESUME_KEY);
+}
+
+void run_mode(Movement* net_move, State* s, int* frame_counter) {
+    (*frame_counter)++;
+    // Collect desired total movement in this frame
+    aggregate_movement(net_move, s, frame_counter);
+
+    // Perform movement
+    if (!move_block(s, net_move)) {
+        // Block was unable to make any valid downwards move.
+
+        // Perform row clear if needed and update score
+        update_score(s);
+
+        // Spawn a new block
+        spawn(s);
+    }
+
+    // Rendering loop
+    clear();
+    render(s);
+    project_ghost(s);
+    refresh();
+
+    // Assuming execution of loop takes negligible time
+    usleep(US_DELAY);
+}
+
 void default_boss_mode() {
     printw(
         "user@workstation-312:~/Developer/project $ gem install heroku --no-redoc --no-ri\n"
@@ -60,8 +90,8 @@ void default_boss_mode() {
     );
 }
 
-void boss_mode() {
-    erase();
+void boss_mode(State* s) {
+    clear();
 
     FILE *fp;
     char path[1035];
@@ -79,15 +109,68 @@ void boss_mode() {
         pclose(fp);
     }
 
-    // wait until game resumed
-    while (getch() != RESUME_KEY);
-    erase();
+    wait_until_resume();
+
+    s->mode = RUNNING;
+}
+
+void pause_mode(State* s) {
+    mvprintw(20, MENU_COL, "*** PAUSED ***");
+
+    wait_until_resume();
+
+    s->mode = RUNNING;
+}
+
+void confirm_quit_mode(State* s) {
+    const char* menu_title = "*** QUIT? ***";
+    const char* menu_items[] = { "yes", "no" };
+    const int num_menu_items = 2;
+    int curr_selection = 0;
+
+    // Until the user presses the select key
+    char user_input;
+    while (user_input != SELECT_KEY) {
+        // Non-blocking user-input
+        timeout(10);
+        user_input = getch();
+
+        // Navigate through the menu based on user-input
+        switch (user_input) {
+            case UP_KEY:
+                decrement_with_min(&curr_selection, 0);
+                break;
+            case DOWN_KEY:
+                increment_with_max(&curr_selection, num_menu_items-1);
+                break;
+        }
+
+        // Render the menu
+        render_menu(menu_title, menu_items, num_menu_items, curr_selection,
+                GRID_W+5, 20);
+    }
+
+    // Take action based on what the user selected from the menu
+    switch (curr_selection) {
+        case 0: // yes, quit
+            s->mode = SHUTDOWN;
+            break;
+        case 1: // no, do not quit
+            s->mode = RUNNING;
+            break;
+    }
+}
+
+void shutdown_mode() {
+    endwin();
+    exit(0);
 }
 
 void act_on_user_input(
     char user_input,
     Movement* m,
-    int* frame_counter) {
+    int* frame_counter,
+    State* s) {
 
     int frames_until_next_move;
     switch(user_input) {
@@ -118,13 +201,13 @@ void act_on_user_input(
             }
             break;
         case PAUSE_KEY: // pause the game
-            // TODO: @skelly pause the game
+            s->mode = PAUSED;
             break;
-        case QUIT_KEY: // quit the game
-            // TODO: @skelly quit the game
+        case QUIT_KEY: // confirm the user wants to quit
+            s->mode = CONFIRM_QUIT;
             break;
         case BOSS_MODE_KEY: // set the game to boss mode
-            boss_mode();
+            s->mode = BOSS;
             break;
     }
 }
@@ -249,7 +332,7 @@ void aggregate_movement(Movement* m, State* s, int* frame_counter) {
     if (is_user_input()) {
         // The user has pressed a key, take appropriate action
         char user_input = getchar();
-        act_on_user_input(user_input, m, frame_counter);
+        act_on_user_input(user_input, m, frame_counter, s);
     }
 }
 
@@ -263,34 +346,23 @@ void begin_game(State* s) {
     int frame_counter = 0;
     Movement* net_move = malloc(sizeof(Movement));
 
-    while (s->mode == RUNNING) {
-        frame_counter++;
-        // Collect desired total movement in this frame
-        aggregate_movement(net_move, s, &frame_counter);
-
-        // Perform movement
-        if (!move_block(s, net_move)) {
-            // Block was unable to make any valid downwards move.
-
-            // Perform row clear if needed and update score
-            update_score(s);
-
-            // Spawn a new block
-            spawn(s);
+    while (1) {
+        switch (s->mode) {
+            case RUNNING:
+                run_mode(net_move, s, &frame_counter);
+                break;
+            case BOSS:
+                boss_mode(s);
+                break;
+            case PAUSED:
+                pause_mode(s);
+                break;
+            case CONFIRM_QUIT:
+                confirm_quit_mode(s);
+                break;
+            case SHUTDOWN:
+                shutdown_mode();
+                break;
         }
-
-        // Rendering loop
-        erase();
-        render(s);
-        project_ghost(s);
-        refresh();
-
-        // Assuming execution of loop takes negligible time
-        usleep(US_DELAY);
     }
-
-    // Shutdown procedure
-    erase();
-    refresh();
-    // TODO: @dbishop terminal state not resetting properly, input not visible
 }

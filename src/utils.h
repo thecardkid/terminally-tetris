@@ -9,6 +9,7 @@
 #define OFFSET 2
 #define SPAWN_X 4
 #define NUM_BLOCKS 7
+#define MENU_COL GRID_W+5
 
 /*
  * Controls
@@ -23,6 +24,7 @@
 #define QUIT_KEY 'q'
 #define BOSS_MODE_KEY 'b'
 #define RESUME_KEY 'r'
+#define SELECT_KEY '\n'
 
 extern const int I_Block[4][2];
 extern const int O_Block[4][2];
@@ -38,6 +40,22 @@ extern const int rotation_matrix_L[2][2];
  * Checks whether coordinate is inside playable area
  */
 int in_grid(int x, int y);
+
+/*
+ * Increment an integer by one without surpassing a specified maximum
+ *
+ * @param num: the integer to increment
+ * @param max: the maximum value that the integer can be incremented to
+ */
+void increment_with_max(int* num, int max);
+
+/*
+ * Decrement an integer by one without surpassing a specified minimum
+ *
+ * @param num: the integer to deccrement
+ * @param max: the minimum value that the integer can be deccremented to
+ */
+void decrement_with_min(int* num, int min);
 
 /*
  * Taken from https://i.stack.imgur.com/JLRFu.png
@@ -59,7 +77,7 @@ typedef enum {LEFT, NO_ROTATE, RIGHT} Rotation;
 /*
  * Modes that the game can be in
  */
-typedef enum {RUNNING, PAUSED, SHUTDOWN, BOSS} Gamemode;
+typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, BOSS} Gamemode;
 
 /*
   Representation of generic Tetris block
