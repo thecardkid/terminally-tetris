@@ -16,6 +16,70 @@ int in_grid(int x, int y) {
     return 1;
 }
 
+void clear_block(State* s) {
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
+
+        s->grid[x][y] = EMPTY;
+    }
+}
+
+void clear_ghost(State* s) {
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->ghosty;
+
+        s->grid[x][y] = EMPTY;
+    }
+}
+
+void draw_block(State* s) {
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
+
+        s->grid[x][y] = s->block->color;
+    }
+}
+
+void draw_ghost(State* s) {
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->ghosty;
+
+        s->grid[x][y] = GHOST;
+    }
+}
+
+void project_ghost(State* s) {
+    int ghost_y = s->block->y;
+
+    if (ghost_y > GRID_H-OFFSET) ghost_y = GRID_H-OFFSET;
+
+    // It can be assumed that the ghost fits in the starting position since
+    //  it starts in the same place as the block.
+    while (ghost_y < GRID_H) {
+        int can_move_down = 1;
+        for (int i = 0; i < 4; i++) {
+            int x = s->block->cells[i][0] + s->block->x;
+            int y = s->block->cells[i][1] + ghost_y;
+
+            if(!in_grid(x, y+1) || s->grid[x][y+1] != EMPTY) {
+                can_move_down = 0;
+            }
+        }
+
+        if (can_move_down) {
+            ghost_y++;
+        } else {
+            break;
+        }
+    }
+
+    s->block->ghosty = ghost_y;
+}
+
 void increment_with_max(int* num, int max) {
     (*num)++;
     if (*num > max) {
