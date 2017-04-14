@@ -19,23 +19,6 @@ void set_up_screen() {
     init_pair(GHOST, COLOR_BLACK, COLOR_WHITE);
 }
 
-void display_ghost(State* s) {
-    int x = s->block->x,
-        y = s->block->ghosty;
-    int r, c;
-    int j = 25; //debug
-
-    attron(COLOR_PAIR(GHOST));
-    for (int i=0; i<4; i++) {
-        c = x + s->block->cells[i][0];
-        r = y + s->block->cells[i][1];
-        mvprintw(r, c+1, " ");
-        //debugging
-        mvprintw(j+i, MENU_COL, "(%d, %d)", r, c);
-    }
-    attroff(COLOR_PAIR(GHOST));
-}
-
 void display_grid(int grid[GRID_W][GRID_H]) {
     int i, j, block;
 
@@ -116,10 +99,9 @@ void render(State* state) {
     int row = 1;
 
     display_grid(state->grid);
-    display_ghost(state);
     row = display_controls(row);
     row++; // blank line
-    mvprintw(row++, MENU_COL, "X: %d, Y: %d, GHOSTX: %d, GHOSTY: %d", state->block->x, state->block->y, state->block->ghostx, state->block->ghosty);
+    mvprintw(row++, MENU_COL, "X: %d, Y: %d, GHOSTX: %d, GHOSTY: %d", state->block->x, state->block->y, state->block->x, state->block->ghosty);
     mvprintw(row++, MENU_COL, "SCORE: %d", state->score);
     row++; // blank line
 

@@ -39,8 +39,15 @@ void run_mode(Movement* net_move, State* s, int* frame_counter) {
     // Collect desired total movement in this frame
     aggregate_movement(net_move, s, frame_counter);
 
+    // Clear interactables such as the block and ghost
+    clear_block(s);
+    clear_ghost(s);
+
     // Perform movement
     if (!move_block(s, net_move)) {
+        // Draw block before we reassign its pointer
+        draw_block(s);
+
         // Block was unable to make any valid downwards move.
 
         // Perform row clear if needed and update score
@@ -49,6 +56,10 @@ void run_mode(Movement* net_move, State* s, int* frame_counter) {
         // Spawn a new block
         spawn(s);
     }
+
+    // Draw block and ghost to grid
+    draw_ghost(s);
+    draw_block(s);
 
     // Rendering loop
     clear();
@@ -212,14 +223,6 @@ void act_on_user_input(
 }
 
 int move_block(State* s, Movement* m) {
-    // Clear cells occupied by the block
-    for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
-
-        s->grid[x][y] = EMPTY;
-    }
-
     // Flags
     int applied_move = 1;
     int can_move_vert = 1;
@@ -304,14 +307,8 @@ int move_block(State* s, Movement* m) {
         }
     }
 
-    // Set cells occupied by block to correct color
-    for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
-
-        s->grid[x][y] = s->block->color;
-        project_ghost(s);
-    }
+    // Recalculate ghost position
+    project_ghost(s);
 
     return can_move_vert;
 }
