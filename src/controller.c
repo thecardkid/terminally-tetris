@@ -182,8 +182,10 @@ void act_on_user_input(
     int* frame_counter,
     State* s) {
 
-    int frames_until_next_move;
     switch(user_input) {
+        case DROP_KEY:
+            m->drop = 1;
+            break;
         case DOWN_KEY:
             m->y = 1; // Move down by 1
             *frame_counter = 0; // Reset counter for default downwards move
@@ -228,6 +230,12 @@ int move_block(State* s, Movement* m) {
     int can_move_vert = 1;
     int can_move_horiz = 1;
     int can_rotate = 1;
+
+    if (m->drop) {
+        s->block->y = s->block->ghosty;
+        m->drop = 0;
+        return 0;
+    }
 
     // Keep attempty to apply moves until no moves can be applied
     while (applied_move) {
