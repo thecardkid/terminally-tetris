@@ -24,6 +24,7 @@
 #define QUIT_KEY 'q'
 #define BOSS_MODE_KEY 'b'
 #define RESUME_KEY 'r'
+#define DROP_KEY ' '
 #define SELECT_KEY '\n'
 
 extern const int I_Block[4][2];
@@ -86,6 +87,7 @@ typedef struct {
     int x;
     int y;
     Rotation r;
+    int drop;
 } Movement;
 
 /*
