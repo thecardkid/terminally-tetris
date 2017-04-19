@@ -3,9 +3,6 @@
 
 #include <string.h>
 
-/*
- * External constants to be used in other files
- */
 #define GRID_W 10
 #define GRID_H 22
 #define OFFSET 2
@@ -13,6 +10,7 @@
 #define NUM_BLOCKS 7
 #define MENU_COL GRID_W+5
 #define MENU_ROW 20
+#define CRITICAL_BLOCK 15
 
 /*
  * Controls
@@ -29,6 +27,9 @@
 #define DROP_KEY ' '
 #define SELECT_KEY '\n'
 
+/*
+ * External constants to be used in other files
+ */
 extern const int I_Block[4][2];
 extern const int O_Block[4][2];
 extern const int T_Block[4][2];
@@ -74,6 +75,7 @@ typedef struct {
     int speed; // speed at which blocks move down without user input
     Block* block;
     BlockType next;
+    int block_count;
 } State;
 
 /*

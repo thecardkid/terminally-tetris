@@ -326,6 +326,7 @@ void begin_game(State* s) {
     s->next = rand() % NUM_BLOCKS;
     s->mode = RUNNING;
     s->speed = 48;
+    s->block_count = 0;
     spawn(s);
 
     int frame_counter = 0;

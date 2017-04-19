@@ -37,8 +37,35 @@ int is_empty(int grid[GRID_W][GRID_H]) {
     return 1;
 }
 
+int set_speed(int level, int curr_speed) {
+    switch (level) {
+        case 1: return 43;
+        case 2: return 38;
+        case 3: return 33;
+        case 4: return 28;
+        case 5: return 23;
+        case 6: return 18;
+        case 7: return 13;
+        case 8: return 8;
+        case 9: return 6;
+        case 10: return 5;
+        case 13: return 4;
+        case 16: return 3;
+        case 19: return 2;
+        case 29: return 1;
+        default: return curr_speed;
+    }
+}
+
 void score_block(State* s) {
     s->score += 10 * (s->level);
+    s->block_count++;
+
+    if (s->block_count == CRITICAL_BLOCK) {
+        s->block_count = 0;
+        s->level++;
+        s->speed = set_speed(s->level, s->speed);
+    }
 }
 
 void score_rows(State* s, int rows_cleared) {

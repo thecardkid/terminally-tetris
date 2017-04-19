@@ -16,6 +16,12 @@ void shift_rows_down(int grid[GRID_W][GRID_H]);
 int is_empty(int grid[GRID_W][GRID_H]);
 
 /*
+ * Set game speed based on current level.
+ * Based on https://gaming.stackexchange.com/questions/13057/tetris-difficulty
+ */
+int set_speed(int level, int curr_speed);
+
+/*
  * Recompute the height of each column
  */
 void compute_heights(State* s);
