@@ -48,8 +48,6 @@ void run_mode(Movement* net_move, State* s, int* frame_counter) {
         // Draw block before we reassign its pointer
         draw_block(s);
 
-        // Block was unable to make any valid downwards move.
-
         // Perform row clear if needed and update score
         update_score(s);
 
@@ -70,36 +68,6 @@ void run_mode(Movement* net_move, State* s, int* frame_counter) {
     usleep(US_DELAY);
 }
 
-void default_boss_mode() {
-    printw(
-        "user@workstation-312:~/Developer/project $ gem install heroku --no-redoc --no-ri\n"
-        "ERROR:  While executing gem ... (Errno::EACCES)\n"
-        "    Permission denied - /Users/user/.gem/ruby/1.9.1/cache/heroku-1.9.13.gem\n"
-        "\n"
-        "user@workstation-312:~/Developer/project $ sudo !!\n"
-        "sudo gem install heroku --no-redoc --no-ri\n"
-        "Successfully installed heroku-1.9.13\n"
-        "1 gem installed\n"
-        "\n"
-        "user@workstation-312:~/Developer/project $ ls -l\n"
-        "total 528\n"
-        "drwxr-xr-x    2 user users   4096 Jun  9 17:05 .\n"
-        "drwxr-xr-x    4 user users   4096 Jun 10 09:52 ..\n"
-        "-rw-r--r--@   1 user users  88583 Jun  9 14:13 .babelrc\n"
-        "-rw-r--r--    1 user users  65357 Jun  9 15:40 .git/\n"
-        "-rw-r--r--    1 user users   4469 Jun  9 16:17 .gitignore\n"
-        "-rw-r--r--    1 user users    455 Jun  9 16:17 index.js\n"
-        "-rw-r--r--    1 user users   2516 Jun  9 16:17 node_modules/\n"
-        "-rw-r--r--    1 user users    183 Jun  9 16:17 package.json\n"
-        "-rw-r--r--    1 user users 349607 Jun  9 16:17 public/\n"
-        "-rw-r--r--    1 user users      0 Jun  9 16:17 src/\n"
-        "-rw-r--r--    1 user users   9284 Jun  9 17:05 webpack.config.js\n"
-        "-rw-r--r--    1 user users    229 Jun  9 16:17 tetris.save\n"
-        "\n"
-        "user@workstation-312:~/Developer/project $ "
-    );
-}
-
 void boss_mode(State* s) {
     erase();
 
@@ -110,7 +78,7 @@ void boss_mode(State* s) {
     fp = popen("/bin/ls -l /etc/", "r");
     if (fp == NULL) {
         // print default text if error happened
-        default_boss_mode();
+        render_default_boss_mode();
     } else {
         while (fgets(path, sizeof(path)-1, fp) != NULL) {
             printw("%s", path);
@@ -125,21 +93,18 @@ void boss_mode(State* s) {
 }
 
 void pause_mode(State* s) {
-    mvprintw(20, MENU_COL, "*** PAUSED ***");
-
+    mvprintw(MENU_ROW, MENU_COL, "*** PAUSED ***");
     wait_until_resume();
 
     s->mode = RUNNING;
 }
 
-void confirm_quit_mode(State* s) {
-    const char* menu_title = "*** QUIT? ***";
-    const char* menu_items[] = { "yes", "no" };
-    const int num_menu_items = 2;
-    int curr_selection = 0;
-
-    // Until the user presses the select key
+int wait_until_option_selected(const char* title,
+        const char** items,
+        int num_items) {
     char user_input;
+    int selection = 0;
+
     while (user_input != SELECT_KEY) {
         // Non-blocking user-input
         timeout(10);
@@ -148,30 +113,61 @@ void confirm_quit_mode(State* s) {
         // Navigate through the menu based on user-input
         switch (user_input) {
             case UP_KEY:
-                decrement_with_min(&curr_selection, 0);
+                decrement_with_min(&selection, 0);
                 break;
             case DOWN_KEY:
-                increment_with_max(&curr_selection, num_menu_items-1);
+                increment_with_max(&selection, num_items-1);
                 break;
         }
 
         // Render the menu
-        render_menu(menu_title, menu_items, num_menu_items, curr_selection,
-                GRID_W+5, 20);
+        render_menu(title, items, num_items, selection);
     }
 
-    // Take action based on what the user selected from the menu
-    switch (curr_selection) {
-        case 0: // yes, quit
-            s->mode = SHUTDOWN;
-            break;
-        case 1: // no, do not quit
+    return selection;
+}
+
+void endgame_mode(State* s) {
+    const char* title = "*** GAME OVER ***";
+    const char* items[] = { "new game", "quit" };
+    const int num_items = 2;
+
+    int selection = wait_until_option_selected(title, items, num_items);
+    int level;
+
+    switch (selection) {
+        case 0: // new game
+            initialize_grid(s->grid);
+            s->score = 0;
             s->mode = RUNNING;
+            break;
+        case 1: // quit
+            s->mode = SHUTDOWN;
             break;
     }
 }
 
-void shutdown_mode() {
+void confirm_quit_mode(State* s) {
+    const char* title = "*** QUIT? ***";
+    const char* items[] = { "no", "yes" };
+    const int num_items = 2;
+
+    // Until the user presses the select key
+    int selection = wait_until_option_selected(title, items, num_items);
+
+    // Take action based on what the user selected from the menu
+    switch (selection) {
+        case 0: // no, do not quit
+            s->mode = RUNNING;
+            break;
+        case 1: // yes, quit
+            s->mode = SHUTDOWN;
+            break;
+    }
+}
+
+void shutdown_mode(State* s) {
+    free(s);
     endwin();
     exit(0);
 }
@@ -191,26 +187,13 @@ void act_on_user_input(
             *frame_counter = 0; // Reset counter for default downwards move
             break;
         case LEFT_KEY:
-            m->x += -1; // Move left by 1
+            m->x--; // Move left by 1
             break;
         case RIGHT_KEY:
-            m->x += 1; // Move right by 1
+            m->x++; // Move right by 1
             break;
-        case ROTATE_CW_KEY: // rotate block clockwise
-            if (m->r == NO_ROTATE) {
-                m->r = RIGHT;
-            }
-            if (m->r == LEFT) {
-                m->r = NO_ROTATE;
-            }
-            break;
-        case ROTATE_CCW_KEY: // rotate block counter-clockwise
-            if (m->r == NO_ROTATE) {
-                m->r = LEFT;
-            }
-            if (m->r == RIGHT) {
-                m->r = NO_ROTATE;
-            }
+        case ROTATE_KEY: // rotate block clockwise
+            m->r = 1;
             break;
         case PAUSE_KEY: // pause the game
             s->mode = PAUSED;
@@ -282,13 +265,12 @@ int move_block(State* s, Movement* m) {
         }
 
         // Try to rotate
-        if (m->r != NO_ROTATE) {
+        int old_cells[4][2];
+        if (m->r) {
             can_rotate = 1;
-            switch (m->r) {
-                case LEFT: rotate_left(s->block); break;
-                case RIGHT: rotate_right(s->block); break;
-                default: break;
-            }
+            // Make copy of current cells
+            memcpy(old_cells, s->block->cells, sizeof(I_Block));
+            rotate(s->block);
 
             for (int i = 0; i < 4; i++) {
                 int x = s->block->cells[i][0] + s->block->x;
@@ -303,13 +285,11 @@ int move_block(State* s, Movement* m) {
 
             if (!can_rotate) {
                 // Undo rotation
-                switch (m->r) {
-                    case LEFT: rotate_right(s->block); break;
-                    case RIGHT: rotate_left(s->block); break;
-                    default: break;
+                if (m->r) {
+                    memcpy(s->block->cells, old_cells, sizeof(I_Block));
                 }
             } else {
-                m->r = NO_ROTATE;
+                m->r = 0;
                 applied_move = 1;
             }
         }
@@ -325,7 +305,7 @@ void aggregate_movement(Movement* m, State* s, int* frame_counter) {
     // Initialize with zero movement
     m->x = 0;
     m->y = 0;
-    m->r = NO_ROTATE;
+    m->r = 0;
 
     // Default downwards movement
     if (*frame_counter > s->speed) {
@@ -365,8 +345,11 @@ void begin_game(State* s) {
             case CONFIRM_QUIT:
                 confirm_quit_mode(s);
                 break;
+            case ENDGAME:
+                endgame_mode(s);
+                break;
             case SHUTDOWN:
-                shutdown_mode();
+                shutdown_mode(s);
                 break;
         }
     }

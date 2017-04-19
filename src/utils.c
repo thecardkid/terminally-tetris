@@ -8,8 +8,7 @@ const int Z_Block[4][2] = {{0,0}, {1,0}, {0,-1}, {-1,-1}};
 const int S_Block[4][2] = {{0,0}, {-1,0}, {0,-1}, {1,-1}};
 const int J_Block[4][2] = {{0,0}, {1,0}, {-1,0}, {-1,-1}};
 const int L_Block[4][2] = {{0,0}, {-1,0}, {1,0}, {1,-1}};
-const int rotation_matrix_L[2][2] = {{0,-1}, {1,0}};
-const int rotation_matrix_R[2][2] = {{0,1}, {-1,0}};
+const int ROTATION_MATRIX_R[2][2] = {{0,1}, {-1,0}};
 
 int in_grid(int x, int y) {
     if (x < 0 || x >= GRID_W || y < 0 || y >= GRID_H) return 0;
@@ -93,3 +92,33 @@ void decrement_with_min(int* num, int min) {
         *num = min;
     }
 }
+
+void initialize_grid(int grid[GRID_W][GRID_H]) {
+    for (int x=0; x<GRID_W; x++) {
+        for (int y=0; y<GRID_H; y++) {
+            grid[x][y] = EMPTY;
+        }
+    }
+}
+
+void rotate(Block* b){
+    if (b->type == O) {
+        return;
+    }
+
+    int rotated_cells[4][2], sum;
+
+    for (int i = 0; i < 4; i++) {//row of first matrix
+        for (int j = 0; j < 2; j++) {   //column of second matrix
+            sum = 0;
+            for (int k = 0; k < 2; k++) {
+                sum += (b->cells[i][k]) * ROTATION_MATRIX_R[k][j];
+                rotated_cells[i][j]=sum;
+            }
+        }
+    }
+
+    // reassign block's cells to the rotated coordinates
+    memcpy(b->cells, rotated_cells, sizeof(b->cells));
+};
+

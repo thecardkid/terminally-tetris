@@ -34,7 +34,7 @@ void spawn(State* s) {
         s->next = n;
         project_ghost(s);
     } else {
-        s->mode = SHUTDOWN;
+        s->mode = ENDGAME;
     }
 }
 

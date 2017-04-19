@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <string.h>
+
 /*
  * External constants to be used in other files
  */
@@ -10,16 +12,16 @@
 #define SPAWN_X 4
 #define NUM_BLOCKS 7
 #define MENU_COL GRID_W+5
+#define MENU_ROW 20
 
 /*
  * Controls
  */
-#define UP_KEY 'k'
-#define DOWN_KEY 'j'
-#define LEFT_KEY 'h'
+#define UP_KEY 'i'
+#define DOWN_KEY 'k'
+#define LEFT_KEY 'j'
 #define RIGHT_KEY 'l'
-#define ROTATE_CW_KEY 'f'
-#define ROTATE_CCW_KEY 'd'
+#define ROTATE_KEY 'f'
 #define PAUSE_KEY 'p'
 #define QUIT_KEY 'q'
 #define BOSS_MODE_KEY 'b'
@@ -34,8 +36,7 @@ extern const int Z_Block[4][2];
 extern const int S_Block[4][2];
 extern const int J_Block[4][2];
 extern const int L_Block[4][2];
-extern const int rotation_matrix_R[2][2];
-extern const int rotation_matrix_L[2][2];
+extern const int ROTATION_MATRIX_R[2][2];
 
 /*
  * Taken from https://i.stack.imgur.com/JLRFu.png
@@ -50,14 +51,9 @@ typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED, GHOST} Block
 typedef enum {I, J, L, O, S, T, Z} BlockType;
 
 /*
- * Define rotation parameter
- */
-typedef enum {LEFT, NO_ROTATE, RIGHT} Rotation;
-
-/*
  * Modes that the game can be in
  */
-typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, BOSS} Gamemode;
+typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, ENDGAME, BOSS} Gamemode;
 
 /*
   Representation of generic Tetris block
@@ -86,7 +82,7 @@ typedef struct {
 typedef struct {
     int x;
     int y;
-    Rotation r;
+    int r;
     int drop;
 } Movement;
 
@@ -142,4 +138,15 @@ void increment_with_max(int* num, int max);
  */
 void decrement_with_min(int* num, int min);
 
+/*
+ * Set all values in tetris grid to EMPTY
+ */
+void initialize_grid(int grid[GRID_W][GRID_H]);
+
+/*
+ * Rotates block 90 degrees clockwise
+ */
+void rotate(Block* b);
+
 #endif
+
