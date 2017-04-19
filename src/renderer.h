@@ -17,6 +17,8 @@ void set_up_screen();
  */
 void display_grid(int grid[GRID_W][GRID_H]);
 
+void display_endgame(State* s);
+
 /*
  * Display control menu
  *
@@ -34,6 +36,12 @@ int display_controls(int row);
 void display_preview(int row, BlockType next);
 
 /*
+ * Default text for when boss mode is incurred and
+ * `popen` fails
+ */
+void render_default_boss_mode();
+
+/*
  * Render a user-scrollable menu with specified characteristics
  *
  * @param menu_title: the title line of the menu
@@ -43,8 +51,10 @@ void display_preview(int row, BlockType next);
  * @param row: row where the menu should render (left-most row)
  * @param col: column where the menu should render (upper-most column)
  */
-void render_menu(const char* title, const char* items[], int num_items,
-        int curr_selection, int row, int col);
+void render_menu(const char* title,
+        const char* items[],
+        int num_items,
+        int selection);
 
 /*
  * Called by the controller, this renders the

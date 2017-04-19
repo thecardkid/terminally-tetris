@@ -9,12 +9,12 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <string.h>
 
 #include "utils.h"
 #include "renderer.h"
 #include "block_factory.h"
 #include "scorer.h"
-#include "rotate.h"
 
 #define US 1000000 // 1 million microseconds per second
 #define TICK_RATE 60 // Steps per second
@@ -40,12 +40,6 @@ void wait_until_resume();
 void run_mode(Movement* net_move, State* s, int* frame_counter);
 
 /*
- * Default text for when boss mode is incurred and
- * `popen` fails
- */
-void default_boss_mode();
-
-/*
  * Pipes the output of `ls -l /etc/` to a file stream
  * and then to the ncurses window, making it look like
  * you were doing work
@@ -66,12 +60,14 @@ void confirm_quit_mode(State* s);
 /*
  * Cleanly shutdown and exit the game
  */
-void shutdown_mode();
+void shutdown_mode(State* s);
 
 /*
  * Modify the state of the game based on user input
  */
-void act_on_user_input(char user_input, Movement* m, int* frame_counter,
+void act_on_user_input(char user_input,
+        Movement* m,
+        int* frame_counter,
         State* s);
 
 /*
