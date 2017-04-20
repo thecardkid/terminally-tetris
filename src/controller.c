@@ -34,17 +34,17 @@ void wait_until_resume() {
     while (getch() != RESUME_KEY);
 }
 
-void run_mode(Movement* net_move, State* s, int* frame_counter) {
+void run_mode(State* s, int* frame_counter) {
     (*frame_counter)++;
     // Collect desired total movement in this frame
-    aggregate_movement(net_move, s, frame_counter);
+    aggregate_movement(s, frame_counter);
 
     // Clear interactables such as the block and ghost
     clear_block(s);
     clear_ghost(s);
 
     // Perform movement
-    if (!move_block(s, net_move)) {
+    if (!move_block(s)) {
         // Draw block before we reassign its pointer
         draw_block(s);
 
@@ -137,9 +137,7 @@ void endgame_mode(State* s) {
 
     switch (selection) {
         case 0: // new game
-            initialize_grid(s->grid);
-            s->score = 0;
-            s->mode = RUNNING;
+            setup_state(s);
             break;
         case 1: // quit
             s->mode = SHUTDOWN;
@@ -167,16 +165,17 @@ void confirm_quit_mode(State* s) {
 }
 
 void shutdown_mode(State* s) {
+    free(s->net_move);
+    free(s->block);
     free(s);
     endwin();
     exit(0);
 }
 
-void act_on_user_input(
-    char user_input,
-    Movement* m,
+void act_on_user_input( char user_input,
     int* frame_counter,
     State* s) {
+    Movement* m = s->net_move;
 
     switch(user_input) {
         case DROP_KEY:
@@ -207,8 +206,9 @@ void act_on_user_input(
     }
 }
 
-int move_block(State* s, Movement* m) {
+int move_block(State* s) {
     // Flags
+    Movement* m = s->net_move;
     int applied_move = 1;
     int can_move_vert = 1;
     int can_move_horiz = 1;
@@ -301,8 +301,9 @@ int move_block(State* s, Movement* m) {
     return can_move_vert;
 }
 
-void aggregate_movement(Movement* m, State* s, int* frame_counter) {
+void aggregate_movement(State* s, int* frame_counter) {
     // Initialize with zero movement
+    Movement* m = s->net_move;
     m->x = 0;
     m->y = 0;
     m->r = 0;
@@ -317,25 +318,33 @@ void aggregate_movement(Movement* m, State* s, int* frame_counter) {
     if (is_user_input()) {
         // The user has pressed a key, take appropriate action
         char user_input = getchar();
-        act_on_user_input(user_input, m, frame_counter, s);
+        act_on_user_input(user_input, frame_counter, s);
     }
 }
 
-void begin_game(State* s) {
-    s->block = malloc(sizeof(Block));
+void setup_state(State* s) {
+    initialize_grid(s->grid);
     s->next = rand() % NUM_BLOCKS;
     s->mode = RUNNING;
+    s->level = 0;
     s->speed = 48;
     s->block_count = 0;
+    s->score = 0;
+}
+
+void begin_game() {
+    State* s = malloc(sizeof(State));
+    s->block = malloc(sizeof(Block));
+    s->net_move = malloc(sizeof(Movement));
+    setup_state(s);
     spawn(s);
 
     int frame_counter = 0;
-    Movement* net_move = malloc(sizeof(Movement));
 
     while (1) {
         switch (s->mode) {
             case RUNNING:
-                run_mode(net_move, s, &frame_counter);
+                run_mode(s, &frame_counter);
                 break;
             case BOSS:
                 boss_mode(s);

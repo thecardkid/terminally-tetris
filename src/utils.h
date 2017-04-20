@@ -67,17 +67,6 @@ typedef struct {
     BlockType type;
 } Block;
 
-typedef struct {
-    int grid[GRID_W][GRID_H];
-    int score;
-    int level;
-    Gamemode mode; // 1: Game in progress 0: Game over
-    int speed; // speed at which blocks move down without user input
-    Block* block;
-    BlockType next;
-    int block_count;
-} State;
-
 /*
  * Container for aggregating net movement in a frame.
  */
@@ -87,6 +76,18 @@ typedef struct {
     int r;
     int drop;
 } Movement;
+
+typedef struct {
+    int grid[GRID_W][GRID_H];
+    int score;
+    int level;
+    Gamemode mode; // 1: Game in progress 0: Game over
+    int speed; // speed at which blocks move down without user input
+    Block* block;
+    BlockType next;
+    int block_count;
+    Movement* net_move;
+} State;
 
 /*
  * Checks whether coordinate is inside playable area

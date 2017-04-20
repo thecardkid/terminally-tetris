@@ -39,6 +39,7 @@ int is_empty(int grid[GRID_W][GRID_H]) {
 
 int set_speed(int level, int curr_speed) {
     switch (level) {
+        case 0: return 48;
         case 1: return 43;
         case 2: return 38;
         case 3: return 33;
@@ -58,7 +59,7 @@ int set_speed(int level, int curr_speed) {
 }
 
 void score_block(State* s) {
-    s->score += 10 * (s->level);
+    s->score += 10 * (s->level+1);
     s->block_count++;
 
     if (s->block_count == CRITICAL_BLOCK) {
