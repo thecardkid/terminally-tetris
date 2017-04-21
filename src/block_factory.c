@@ -12,6 +12,18 @@ void copy_cells(BlockType t, int cells[4][2]) {
     }
 }
 
+BlockType choose_next(BlockType current) {
+    int n;
+
+    n = rand() % (NUM_BLOCKS + 1);
+
+    if (n == NUM_BLOCKS || n == current) {
+        n = rand() % NUM_BLOCKS;
+    }
+
+    return n;
+}
+
 void spawn(State* s) {
     switch(s->next) {
         case I: spawn_I(s->block); break;
@@ -28,10 +40,7 @@ void spawn(State* s) {
     int n;
 
     if (spawn_space_available(s)) {
-        while ((n = rand() % NUM_BLOCKS) == s->next) {
-            n = rand() % NUM_BLOCKS;
-        }
-        s->next = n;
+        s->next = choose_next(s->next);
         project_ghost(s);
     } else {
         s->mode = ENDGAME;

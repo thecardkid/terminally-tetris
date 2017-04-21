@@ -37,7 +37,7 @@ void wait_until_resume();
 /*
  * The main run state of the game.
  */
-void run_mode(Movement* net_move, State* s, int* frame_counter);
+void run_mode(State* s, int* frame_counter);
 
 /*
  * Pipes the output of `ls -l /etc/` to a file stream
@@ -66,7 +66,6 @@ void shutdown_mode(State* s);
  * Modify the state of the game based on user input
  */
 void act_on_user_input(char user_input,
-        Movement* m,
         int* frame_counter,
         State* s);
 
@@ -82,13 +81,15 @@ void act_on_user_input(char user_input,
  * in the event that one of these sub-moves is impossible, it will be re-tried
  * once all other sub-moves in the movement are executed.
  */
-int move_block(State* s, Movement* m);
+int move_block(State* s);
 
 /*
  * Collect total movements from all sources
  */
-void aggregate_movement(Movement* m, State* s, int* frame_counter);
+void aggregate_movement(State* s, int* frame_counter);
 
-void begin_game(State* state);
+void setup_state(State* s);
+
+void begin_game();
 
 #endif

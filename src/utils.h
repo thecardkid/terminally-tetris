@@ -3,9 +3,6 @@
 
 #include <string.h>
 
-/*
- * External constants to be used in other files
- */
 #define GRID_W 10
 #define GRID_H 22
 #define OFFSET 2
@@ -13,6 +10,7 @@
 #define NUM_BLOCKS 7
 #define MENU_COL GRID_W+5
 #define MENU_ROW 20
+#define CRITICAL_BLOCK 15
 
 /*
  * Controls
@@ -29,6 +27,9 @@
 #define DROP_KEY ' '
 #define SELECT_KEY '\n'
 
+/*
+ * External constants to be used in other files
+ */
 extern const int I_Block[4][2];
 extern const int O_Block[4][2];
 extern const int T_Block[4][2];
@@ -66,16 +67,6 @@ typedef struct {
     BlockType type;
 } Block;
 
-typedef struct {
-    int grid[GRID_W][GRID_H];
-    int score;
-    int level;
-    Gamemode mode; // 1: Game in progress 0: Game over
-    int speed; // speed at which blocks move down without user input
-    Block* block;
-    BlockType next;
-} State;
-
 /*
  * Container for aggregating net movement in a frame.
  */
@@ -85,6 +76,18 @@ typedef struct {
     int r;
     int drop;
 } Movement;
+
+typedef struct {
+    int grid[GRID_W][GRID_H];
+    int score;
+    int level;
+    Gamemode mode; // 1: Game in progress 0: Game over
+    int speed; // speed at which blocks move down without user input
+    Block* block;
+    BlockType next;
+    int block_count;
+    Movement* net_move;
+} State;
 
 /*
  * Checks whether coordinate is inside playable area

@@ -7,8 +7,20 @@
 
 #include "utils.h"
 
+/*
+ * A synonym for memcpy
+ */
 void copy_cells(BlockType t, int cells[4][2]);
-void spawn(State* s);
+
+/*
+ * Choose the next block based on this logic:
+ * 1. Pick a random num between 0-7 (7 being a dummy). If
+ *    the result is 7 or the current block, go to step 2.
+ * 2. Pick a random num between 0-6.
+ * Return that number
+ * Source: https://gaming.stackexchange.com/questions/13057/tetris-difficulty
+ */
+BlockType choose_next(BlockType current);
 
 /*
  * Make sure that all cells occupied by the block are empty.
@@ -17,6 +29,7 @@ void spawn(State* s);
  */
 int spawn_space_available(State* s);
 
+void spawn(State* s);
 void spawn_I(Block* b);
 void spawn_O(Block* b);
 void spawn_T(Block* b);

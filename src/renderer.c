@@ -145,6 +145,7 @@ void render(State* state) {
     row = display_controls(row);
     row++; // blank line
     mvprintw(row++, MENU_COL, "SCORE: %d", state->score);
+    mvprintw(row++, MENU_COL, "LEVEL: %d", state->level);
     row++; // blank line
 
     if (state->level < 5) {
