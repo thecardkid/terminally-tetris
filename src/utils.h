@@ -95,6 +95,31 @@ typedef struct {
 int in_grid(int x, int y);
 
 /*
+ * Checks whether the spaces below or above a cell are empty
+ */
+int can_move_vertically(int x, int y, State* s);
+
+/*
+ * Checks whether the spaces to the sides of a cell are empty
+ */
+int can_move_horizontally(int x, int y, State* s);
+
+/*
+ * Attempt to move a block a vertical distance defined by the movement struct
+ */
+int move_block_vertically(State* s);
+
+/*
+ * Attempt to move a block a horizontal distance
+ */
+int move_block_horizontally(State* s);
+
+/*
+ * Attempt to rotate a block
+ */
+int rotate_block(State* s);
+
+/*
  * Set all cells occupied by playable block to EMPTY
  */
 void clear_block(State* s);

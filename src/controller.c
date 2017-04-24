@@ -211,8 +211,6 @@ int move_block(State* s) {
     Movement* m = s->net_move;
     int applied_move = 1;
     int can_move_vert = 1;
-    int can_move_horiz = 1;
-    int can_rotate = 1;
 
     if (m->drop) {
         s->block->y = s->block->ghosty;
@@ -226,70 +224,22 @@ int move_block(State* s) {
 
         // Try to move vertically
         if (m->y != 0) {
-            can_move_vert = 1;
-            for (int i = 0; i < 4; i++) {
-                int x = s->block->cells[i][0] + s->block->x;
-                int y = s->block->cells[i][1] + s->block->y;
-
-                // Conditions where move is invalid
-                if (!in_grid(x, y + m->y) || ((s->grid[x][y + m->y] != EMPTY) && (s->grid[x][y + m->y] != GHOST))) {
-                    can_move_vert = 0;
-                    break;
-                }
-            }
+            can_move_vert = move_block_vertically(s);
             if (can_move_vert) {
-                s->block->y += m->y;
-                m->y = 0; // signal that we have performed this operation
-                applied_move = 1; // signal that A operation was performed
-            }
+                applied_move = 1;
+            } 
         }
 
         // Try to move horizontally
         if (m->x != 0) {
-            can_move_horiz = 1;
-            for (int i = 0; i < 4; i++) {
-                int x = s->block->cells[i][0] + s->block->x;
-                int y = s->block->cells[i][1] + s->block->y;
-
-                // Conditions where move is invalid
-                if (!in_grid(x + m->x, y) || s->grid[x + m->x][y] != EMPTY) {
-                    can_move_horiz = 0;
-                    break;
-                }
-            }
-            if (can_move_horiz) {
-                s->block->x += m->x;
-                m->x = 0;
+            if (move_block_horizontally(s)) {
                 applied_move = 1;
             }
         }
 
         // Try to rotate
-        int old_cells[4][2];
         if (m->r) {
-            can_rotate = 1;
-            // Make copy of current cells
-            memcpy(old_cells, s->block->cells, sizeof(I_Block));
-            rotate(s->block);
-
-            for (int i = 0; i < 4; i++) {
-                int x = s->block->cells[i][0] + s->block->x;
-                int y = s->block->cells[i][1] + s->block->y;
-
-                // Conditions where move is invalid
-                if (!in_grid(x, y) || s->grid[x][y] != EMPTY) {
-                    can_rotate = 0;
-                    break;
-                }
-            }
-
-            if (!can_rotate) {
-                // Undo rotation
-                if (m->r) {
-                    memcpy(s->block->cells, old_cells, sizeof(I_Block));
-                }
-            } else {
-                m->r = 0;
+            if (rotate_block(s)) {
                 applied_move = 1;
             }
         }

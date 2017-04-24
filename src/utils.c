@@ -15,6 +15,129 @@ int in_grid(int x, int y) {
     return 1;
 }
 
+int can_move_vertically(int x, int y, State* s) {
+    int delta_y = s->net_move->y;
+    int dy;
+    if (delta_y < 0) {
+        dy = -1;
+    } else {
+        dy = 1;
+    }
+
+    while (dy*dy <= delta_y*delta_y) {
+        if (!in_grid(x, y + dy) || s->grid[x][y + dy] != EMPTY) {
+            return 0;
+        }
+
+        if (delta_y < 0) {
+            dy--;
+        } else {
+            dy++;
+        }
+    }
+
+    return 1;
+}
+
+int can_move_horizontally(int x, int y, State* s) {
+    int delta_x = s->net_move->x;
+    int dx;
+    if (delta_x < 0) {
+        dx = -1;
+    } else {
+        dx = 1;
+    }
+
+    while (dx*dx <= delta_x*delta_x) {
+        if (!in_grid(x + dx, y) || s->grid[x + dx][y] != EMPTY) {
+            return 0;
+        }
+
+        if (delta_x < 0) {
+            dx--;
+        } else {
+            dx++;
+        }
+    }
+
+    return 1;
+}
+
+int move_block_vertically(State* s) {
+    Movement* m = s->net_move;
+    int can_move_vert = 1;
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
+
+        // Conditions where move is invalid
+        if (!can_move_vertically(x, y, s)) {
+            can_move_vert = 0;
+            break;
+        }
+    }
+    if (can_move_vert) {
+        s->block->y += m->y;
+        m->y = 0; // signal that we have performed this operation
+        return 1; // signal that A operation was performed
+    } else {
+        return 0;
+    }
+}
+
+int move_block_horizontally(State* s) {
+    Movement* m = s->net_move;
+    int can_move_horiz = 1;
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
+
+        // Conditions where move is invalid
+        if (!can_move_horizontally(x, y, s)) {
+            can_move_horiz = 0;
+            break;
+        }
+    }
+    if (can_move_horiz) {
+        s->block->x += m->x;
+        m->x = 0;
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int rotate_block(State* s) {
+    Movement* m = s->net_move;
+    int old_cells[4][2];
+    int can_rotate = 1;
+    // Make copy of current cells
+    memcpy(old_cells, s->block->cells, sizeof(I_Block));
+    rotate(s->block);
+
+    for (int i = 0; i < 4; i++) {
+        int x = s->block->cells[i][0] + s->block->x;
+        int y = s->block->cells[i][1] + s->block->y;
+
+        // Conditions where move is invalid
+        if (!in_grid(x, y) || s->grid[x][y] != EMPTY) {
+            can_rotate = 0;
+            break;
+        }
+    }
+
+    if (!can_rotate) {
+        // Undo rotation
+        if (m->r) {
+            memcpy(s->block->cells, old_cells, sizeof(I_Block));
+        }
+        return 0;
+    } else {
+        m->r = 0;
+        return 1;
+    }
+}
+
 void clear_block(State* s) {
     for (int i = 0; i < 4; i++) {
         int x = s->block->cells[i][0] + s->block->x;
