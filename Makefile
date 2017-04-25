@@ -53,12 +53,12 @@ GRAPHICSFLAGS = -lglut -lGL -lGLU
 LDFLAGS = -lncurses
 
 # The Makefile's run command
-RUN = $(BUILD_DIR)/main
+RUN = $(BUILD_DIR)/ttetris
 
 # Build targets.
 .PHONY: all
 all : $(RUN)
-	LD_LIBRARY_PATH=$(CURRENT_DIR)/build ./build/main
+	LD_LIBRARY_PATH=$(CURRENT_DIR)/build
 
 .PHONY: clean
 clean :
@@ -72,7 +72,7 @@ OBJ = $(BUILD_DIR)/main.o \
 
 # ==== Make rules ====
 
-$(BUILD_DIR)/main: $(OBJ)
+$(BUILD_DIR)/ttetris: $(OBJ)
 	$(C) $^ -o $@ $(LDFLAGS) $(CFLAGS)
 
 # Builds the dependency object files.
