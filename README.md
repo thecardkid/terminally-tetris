@@ -1,32 +1,28 @@
-# SoftSysBombassticBamboo
-Olin College of Engineering - Software Systems Final Project
+# Terminally Tetris
+Tetris for your Terminal
+Olin College of Engineering - Software Systems Final Project: SoftsysBombassticBamboo
 
+## Seeing is believing
 ![demo](docs/demo.gif)
 
-
-## Install
-
+## Dev dependencies
 **Ncurses**
 
 Ubuntu: `sudo apt-get install libncurses5-dev`
 
 Mac: `brew install homebrew/dupes/ncurses`
 
+## Build from source
 
-## Quickstart
+- First clone the repo `git clone https://github.com/thecardkid/terminally-tetris`
+- Then build the source code `cd terminally-tetris && make`
+- Move the executable `mv build/ttetris /usr/local/bin` (I assume here that `/usr/local/bin` is part of your `$PATH`. If not:
+  - echo `$PATH`
+  - `mv` the executable into any of the `:` delimited directories
+- Play with `ttetris`
 
-Clone our repo.
+## Co-Authors
 
-`git clone https://github.com/thecardkid/terminally-tetris.git`
-
-Build our game.
-
-`make`
-
-Change directory to the executable binary file.
-
-`cd build`
-
-Run Tetris in the terminal!
-
-`./ttetris`
+- [Daniel Bishop](https://github.com/Daniel6)
+- [Rachel Yang](https://github.com/RachelYang02)
+- [Shane Kelly](https://github.com/shanek21)
