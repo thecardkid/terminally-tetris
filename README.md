@@ -1,5 +1,7 @@
 # SoftSysBombassticBamboo
-SoftSys Project 2 Team
+Olin College of Engineering - Software Systems Final Project
+
+![demo](docs/demo.gif)
 
 
 ## Install
