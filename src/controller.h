@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#define _BSD_SOURCE
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
