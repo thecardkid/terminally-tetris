@@ -28,6 +28,7 @@ We also wanted to investigate threading and implement our algorithm in such a wa
 We chose to write the cube API in C++ and the solver in C. To give the solver the ability to “try” moves, we wrote a shared library which exposes a C-compatible wrapper around the Rubik’s cube rotation function. The shared rotate function transforms takes as arguments an underlying state array to transform and a move to perform. It initializes a Rubik’s cube with the underlying state, performs the rotation (thereby modifying the underlying state), and throws away the Rubik’s cube.
 
 ## Results
-![rubik.gif](reports/resources/cube_solving.gif)
 
-Running our program ([found here](https://github.com/thecardkid/SoftSysAsocialAardvark)), a user is able to manipulate the cube, scramble it, and solve it. The solution (with both the moves and the time the thread took to complete) is printed to console. As an example, thread #5 on our test ran for 0.000628s and solved the cube in 6 moves (a more complex scramble would take longer).  If we had more time for this project, our stretch goals included extending our implementation to support cubes of larger size (theoretically to nxnxn) and using different solve algorithms with threading to show performance differences (in terms of moves and CPU time).
+![demo](docs/demo.gif)
+
+Running our software renders an instance of Tetris in the terminal! Terminally Tetris has the full functionality of original Tetris including row clears, a score board, next block preview, block dropping, and more! It's everything you could want from a 1984 Russian-made video game, but now without leaving the comfort of your favorite shell!
