@@ -14,6 +14,8 @@ Tetrominos can move at variable speeds that are directly tied to the framerate o
 
 Valid Tetromino movements are all lateral directions, and counter/counter clockwise rotations. Not all of these movements are used in the game, but support for them exists.
 
+A special movement exists for dropping Tetrominos which instantly moves the Tetromino as far down as it can go. This lets the player quickly finalize the position of the Tetromino without having to make repeated downwards inputs or wait for the Tetromino to fall on its own.
+
 Internally, Tetromino movements are represented by a movement structure, which contains information on the net movement of a Tetromino. During normal gameplay, movement should not exceed 1 unit in any direction and 1 rotation, although programmatically there is no limit. Exceeding these limits will yield jittery movement, but will not interfere with collision detection.
 
 ### _Tetromino Collision_
@@ -34,10 +36,15 @@ When user inputs generate a movement structure, the movement is applied to the p
 ### _Tetromino Spawning_
 When a new is spawned, it is chosen from the pool of [Tetromino types](http://tetris.wikia.com/wiki/Tetromino#The_Basic_Tetrominoes) with a bias against choosing the same type as the previous Tetromino. This new Tetromino is spawned above the top of the visible game area in a buffer zone, and is then moved down into the playable area by user input or the natural game progression.
 
+The Tetromino to be spawned after the current one is also calcuated in the spawning process, and is displayed to the player to help them plan their moves in advance.
+
 ### _Scoring_
 When a Tetromino comes to a rest, the rows which it is present in are checked for completion. If any of the rows are filled completely, they are cleared and points are added. More points are rewarded for clearing multiple rows at once. If clearing the rows results in an empty stage, an additional point reward is added.
 
 Score bonuses are multiplied by a difficulty multiplier that increases as the game progresses. This is directly tied to the rate at which Tetrominos move downards without user input.
+
+### _Ghosting_
+Ghosting is a feature that displays the final position of the playable Tetromino if no further user inputs were made. This display aids in the horizontal positioning of the Tetromino.
 
 ### _Graphics_
 Terminally Tetris uses the [ncurses](https://en.wikipedia.org/wiki/Ncurses) library to render itself as ASCII art in the terminal. Upon entering Boss Mode, it renders some sample output from package installation processes in its place.
