@@ -236,20 +236,24 @@ void hold_piece(State* s) {
     s->held->type = s->block->type;
     s->held->color = s->block->color;
 
-    int dx, dy;
-    for (int i = 0; i < 4; i++) {
-        // attempt to clear; TODO: bug fix
-        dx = s->block->cells[i][0];
-        dy = s->block->cells[i][1];
-        s->grid[s->block->y + dy][s->block->x + dx] = EMPTY;
-        s->grid[s->block->ghosty + dy][s->block->x + dx] = EMPTY;
-    }
+    clear_block(s);
+    clear_ghost(s);
 
     if (s->in_hold) {
+        // check to see if there is room to swap the blocks
+        for (int i = 0; i < 4; i++) {
+            int x = s->block->x + cells[i][0];
+            int y = s->block->y + cells[i][1];
+
+            if (s->grid[x][y] != EMPTY && s->grid[x][y] != GHOST) {
+                return;
+            }
+        }
         // swap
         memcpy(s->block->cells, cells, sizeof(I_Block));
         s->block->type = type;
         s->block->color = color;
+        project_ghost(s);
     } else {
         spawn(s);
     }
