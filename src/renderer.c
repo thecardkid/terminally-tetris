@@ -150,6 +150,8 @@ void render(State* state) {
 
     if (state->level < 5) {
         display_preview(row, state->next);
+    } else {
+        mvprintw(row++, MENU_COL, "NO PREVIEW AT LEVEL 5 AND ABOVE!");
     }
 }
 
