@@ -1,34 +1,48 @@
-# Rubik’s cube in C
+# Terminally Tetris
 ## Software Systems Spring 2017
-### [Hieu Nguyen](https://github.com/thecardkid) [David Papp](https://github.com/davpapp) [Philip Seger](https://github.com/segerphilip) [Sarah Walters](https://github.com/sarahwalters)
-This project uses depth first search, threading, and OpenGL to solve and display a Rubik’s cube in C/C++.
+### [Hieu Nguyen](https://github.com/thecardkid) [Daniel Bishop](https://github.com/Daniel6) [Shane Kelly](https://github.com/shanek21) [Rachel Yang](https://github.com/RachelYang02)
+Play Tetris in your terminal and disguise it as actual work!
 
-## Rubik’s cube algorithms
-Unsurprisingly, depth first search is not the most efficient algorithm for solving a Rubik’s cube. Many individuals have done work to solve a cube in [52 moves](https://www.jaapsch.net/puzzles/thistle.htm) or near-perfect with only [20 moves](http://kociemba.org/cube.htm). With both of these approaches, searching is used to try theoretical moves and find the optimal solution from large lookup-tables. With our depth-first search implementation, we follow a similar idea. We create nine threads (one for each face move), and run depth-first search from the new individual cube state. If a solution is found within a max depth, the solution is returned and timed. This means that the number of moves and the time each took are shown so the user can choose their own solve method.
+## What is Terminally Tetris?
+Terminally Tetris is a basic implementation of the popular game, Tetris, with a little extra. Terminally Tetris ships with the ability to pause and replace the game's visuals with the output of a package being installed. We call this "boss mode" as it serves as a quick way to diguise your tomfoolery from curious eyes. Terminally Tetris is designed to be lightweight, capable of starting and exiting at a moment's notice in order to avoid detection.
 
 ## Implementation
-The project consists of four major components: an object-oriented Rubik’s cube API written in C++, graphics written in OpenGL with C++, a multi-threaded depth-first search solver written in C, and a connector library written in C++ which allows the multi-threaded solver to “try” Rubik’s cube moves using the object-oriented API.
+Terminally Tetris is written entirely in the C language.
 
-### _Cube API_
-We wanted to write the cube API in C++ to simplify rotation -- the cube API is a wrapper around an array, and manipulating the array directly to rotate the cube is a little complicated. With object orientation, we were able to tuck all of the rotation complexity away into a RubiksCube class with a single rotate method.
+### _Tetromino Movement_
+Tetrominos can move at variable speeds that are directly tied to the framerate of the game. By default, the game renders at 60fps, and a Tetromino will move towards the bottom of the stage every 48 frames. As the difficulty of the game increases, this number decreases to a minimum of 1 (Tetrominos move at every frame). Although the game can be modified to run at higher frequencies, this would only affect inpout handling which occurs on each render frame.
+
+Valid Tetromino movements are all lateral directions, and counter/counter clockwise rotations. Not all of these movements are used in the game, but support for them exists.
+
+Internally, Tetromino movements are represented by a movement structure, which contains information on the net movement of a Tetromino. During normal gameplay, movement should not exceed 1 unit in any direction and 1 rotation, although programmatically there is no limit. Exceeding these limits will yield jittery movement, but will not interfere with collision detection.
+
+### _Tetromino Collision_
+Any time a movement is applied to a Tetromino, the new position of the Tetromino is checked to make sure that the Tetromino remains within the game boundaries and is not moving into a space that is occupied by another Tetromino. Since a movement can be a combination of lateral and rotational movements, each sub-move of a movement is applied separately to the Tetromino and checked for validity. Once all possible sub-moves have been applied, the new position is finalized and rendered. The hierarchy in which sub-moves are applied is:
+1. Vertical
+2. Horizontal
+3. Rotational
+
+If a Tetromino is unable to move down, it will still attempt to move horizontally or rotate. This allows for techniques such as [t-spins](http://tetris.wikia.com/wiki/T-Spin).
+
+When a playable Tetromino attempts to move vertically as part of its movement but cannot execute the vertical movement, it becomes a non-playable Tetromino and triggers a score calculation plus a block spawning event. 
+
+### _User Input_
+User input is aggregated over a timespan after which a movement structure is generated and applied to the playable Tetromino. By default the aggregation period is 1 frame, but can be extended to accept inputs over a longer span. The purpose of aggregation is to combine multiple user inputs into 1 movement, cancelling out conflicting inputs such as move left and move right. The aggregation period should be a few frames in order to catch keys being pressed at almost the same time.
+
+When user inputs generate a movement structure, the movement is applied to the playable Tetromino immediately, unlike the standard downwards progression of the piece. If the user movement includes a downwards portion, the Tetromino will reset its timer and wait another 48 frames (or however many the difficulty calsl for) before moving downwards again.
+
+### _Tetromino Spawning_
+When a new is spawned, it is chosen from the pool of [Tetromino types](http://tetris.wikia.com/wiki/Tetromino#The_Basic_Tetrominoes) with a bias against choosing the same type as the previous Tetromino. This new Tetromino is spawned above the top of the visible game area in a buffer zone, and is then moved down into the playable area by user input or the natural game progression.
+
+### _Scoring_
+When a Tetromino comes to a rest, the rows which it is present in are checked for completion. If any of the rows are filled completely, they are cleared and points are added. More points are rewarded for clearing multiple rows at once. If clearing the rows results in an empty stage, an additional point reward is added.
+
+Score bonuses are multiplied by a difficulty multiplier that increases as the game progresses. This is directly tied to the rate at which Tetrominos move downards without user input.
 
 ### _Graphics_
-We chose to use [OpenGL](http://www.glprogramming.com/red/chapter01.html), a library which provides useful abstractions on top of low-level graphics programming, to render the cube. In theory it would’ve been possible to render the cube directly in C; however, it’s easier to model, display, and manipulate multi-part three-dimensional objects like Rubik’s cubes with the aid of OpenGL’s abstractions. For instance, OpenGL provides a “camera” which is useful for switching perspective, used in our program to rotate the user’s “eye” relative to the cube. It also handles double-buffering for smooth animation.
-
-The graphical implementation models the Rubik’s cube as a collection of twenty-seven individual cubelets. The geometry of each cubelet is defined by its eight corner vertices. Graphics hardware is designed to render triangles, so each cubelet is drawn using twelve triangles -- two for each of the six square faces.
-
-### _Solving algorithms vs. DFS_
-We strayed away from solving cubes algorithmically, the way one would in real life. This approach would have consisted of tediously hard-coding simple patterns. Furthermore, this approach could not have been used to generalize to larger cubes.  Computationally, an algorithmic approach would be orders of magnitude faster than DFS, but might not find the optimal solution (meaning the fewest number of moves).
-Since some scrambled cubes might take as many as 20 moves to solve, there are over 43 quintillion solutions and thus DFS will not always find a solution in a reasonable amount of time. However, DFS allowed us to learn and implement threading. Threading and DFS also required us to be careful with memory management, which we realized after various segmentation faults and erratic behavior between threads.
-
-### _Multi-threading_
-We also wanted to investigate threading and implement our algorithm in such a way that threading would be possible. We started our implementation using [pthread](https://computing.llnl.gov/tutorials/pthreads/) to create a new thread for an individual face move, such that thread 0 would start with the current cube state except for one face rotated, thread 1 would start with the current cube state except the second face would be rotated, and so on. Before and after a thread is started, we take the value of [clock](http://www.gnu.org/software/libc/manual/html_node/CPU-Time.html) and use the difference between the two values and the clock speed of the computer hardware to compute how much CPU time was used for a thread to complete.
-
-### _Connector library_
-We chose to write the cube API in C++ and the solver in C. To give the solver the ability to “try” moves, we wrote a shared library which exposes a C-compatible wrapper around the Rubik’s cube rotation function. The shared rotate function transforms takes as arguments an underlying state array to transform and a move to perform. It initializes a Rubik’s cube with the underlying state, performs the rotation (thereby modifying the underlying state), and throws away the Rubik’s cube.
+Terminally Tetris uses the [ncurses](https://en.wikipedia.org/wiki/Ncurses) library to render itself as ASCII art in the terminal. Upon entering Boss Mode, it renders some sample output from package installation processes in its place.
 
 ## Results
+![rubik.gif](reports/resources/cube_solving.gif)
 
-![demo](docs/demo.gif)
-
-Running our software renders an instance of Tetris in the terminal! Terminally Tetris has the full functionality of original Tetris including row clears, a score board, next block preview, block dropping, and more! It's everything you could want from a 1984 Russian-made video game, but now without leaving the comfort of your favorite shell!
+Running our program ([found here](https://github.com/thecardkid/SoftSysAsocialAardvark)), a user is able to manipulate the cube, scramble it, and solve it. The solution (with both the moves and the time the thread took to complete) is printed to console. As an example, thread #5 on our test ran for 0.000628s and solved the cube in 6 moves (a more complex scramble would take longer).  If we had more time for this project, our stretch goals included extending our implementation to support cubes of larger size (theoretically to nxnxn) and using different solve algorithms with threading to show performance differences (in terms of moves and CPU time).
