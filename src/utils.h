@@ -19,6 +19,7 @@
 #define DOWN_KEY 'k'
 #define LEFT_KEY 'j'
 #define RIGHT_KEY 'l'
+#define HOLD_KEY 'a'
 #define ROTATE_KEY 'f'
 #define PAUSE_KEY 'p'
 #define QUIT_KEY 'q'
@@ -83,7 +84,10 @@ typedef struct {
     int level;
     Gamemode mode; // 1: Game in progress 0: Game over
     int speed; // speed at which blocks move down without user input
+    int can_hold;
+    int in_hold;
     Block* block;
+    Block* held;
     BlockType next;
     int block_count;
     Movement* net_move;
@@ -177,4 +181,3 @@ void initialize_grid(int grid[GRID_W][GRID_H]);
 void rotate(Block* b);
 
 #endif
-

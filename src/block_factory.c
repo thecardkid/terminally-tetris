@@ -40,6 +40,7 @@ void spawn(State* s) {
     int n;
 
     if (spawn_space_available(s)) {
+        s->can_hold = 1;
         s->next = choose_next(s->next);
         project_ghost(s);
     } else {

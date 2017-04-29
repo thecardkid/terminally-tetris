@@ -72,6 +72,16 @@ void act_on_user_input(char user_input,
         State* s);
 
 /*
+ * Attempts to hold block
+ */
+void decide_hold(State* s);
+
+/*
+ * Swaps falling block with previously held block
+ */
+void hold_piece(State* s);
+
+/*
  * Most basic movement in the game, attempt to move block down by one step. If
  * this movement is obstructed, return 0.
  *

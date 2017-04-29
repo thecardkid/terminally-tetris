@@ -28,12 +28,26 @@ void display_endgame(State* s);
 int display_controls(int row);
 
 /*
+ * Display method for NEXT and HOLD
+ * @param row: row to print from
+ * @param next: block to render
+  */
+void display_preview(int row, BlockType next);
+
+/*
+ * Display block currently on hold
+ * @param row: row to print from
+ * @param next: block currently in hold domain
+  */
+void display_hold(int row, Block* b);
+
+/*
  * Display next block that will spawn
  *
  * @param row: row to print from
  * @param next: block that will spawn next
  */
-void display_preview(int row, BlockType next);
+void display_block(int row, int col, int cells[4][2], BlockType type);
 
 /*
  * Default text for when boss mode is incurred and
@@ -63,4 +77,3 @@ void render_menu(const char* title,
 void render(State* state);
 
 #endif
-

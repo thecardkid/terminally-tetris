@@ -191,6 +191,9 @@ void act_on_user_input( char user_input,
         case RIGHT_KEY:
             m->x++; // Move right by 1
             break;
+        case HOLD_KEY:
+            decide_hold(s); // hold current tetronimo
+            break;
         case ROTATE_KEY: // rotate block clockwise
             m->r = 1;
             break;
@@ -203,6 +206,52 @@ void act_on_user_input( char user_input,
         case BOSS_MODE_KEY: // set the game to boss mode
             s->mode = BOSS;
             break;
+    }
+}
+
+void decide_hold(State* s) {
+    if (s->can_hold == 0) {
+        return;
+    } else {
+        hold_piece(s);
+        s->can_hold = 0;
+        s->in_hold = 1;
+    }
+}
+
+void hold_piece(State* s) {
+    int cells[4][2];
+    BlockType type;
+    BlockColor color;
+
+    if (s->in_hold) {
+        // save held_block data if there exists a held_block
+        type = s->held->type;
+        color = s->held->color;
+        memcpy(cells, s->held->cells, sizeof(I_Block));
+    }
+
+    // save block into hold domain
+    memcpy(s->held->cells, s->block->cells, sizeof(I_Block));
+    s->held->type = s->block->type;
+    s->held->color = s->block->color;
+
+    int dx, dy;
+    for (int i = 0; i < 4; i++) {
+        // attempt to clear; TODO: bug fix
+        dx = s->block->cells[i][0];
+        dy = s->block->cells[i][1];
+        s->grid[s->block->y + dy][s->block->x + dx] = EMPTY;
+        s->grid[s->block->ghosty + dy][s->block->x + dx] = EMPTY;
+    }
+
+    if (s->in_hold) {
+        // swap
+        memcpy(s->block->cells, cells, sizeof(I_Block));
+        s->block->type = type;
+        s->block->color = color;
+    } else {
+        spawn(s);
     }
 }
 
@@ -227,7 +276,7 @@ int move_block(State* s) {
             can_move_vert = move_block_vertically(s);
             if (can_move_vert) {
                 applied_move = 1;
-            } 
+            }
         }
 
         // Try to move horizontally
@@ -280,11 +329,14 @@ void setup_state(State* s) {
     s->speed = 48;
     s->block_count = 0;
     s->score = 0;
+    s->can_hold = 1;
+    s->in_hold = 0;
 }
 
 void begin_game() {
     State* s = malloc(sizeof(State));
     s->block = malloc(sizeof(Block));
+    s->held = malloc(sizeof(Block));
     s->net_move = malloc(sizeof(Movement));
     setup_state(s);
     spawn(s);
