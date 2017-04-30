@@ -38,6 +38,9 @@ When a new is spawned, it is chosen from the pool of [Tetromino types](http://te
 
 The Tetromino to be spawned after the current one is also calcuated in the spawning process, and is displayed to the player to help them plan their moves in advance.
 
+### _Tetromino Holding_
+The player has the ability to remove a playable Tetromino and "hold" hold in reserve. Only one Tetromino may be held at a time, and there is a cooldown period after holding a Tetromino in which the hold function is disabled. When a hold action is made, the currently playable Tetromino is immediately removed from the field, and the Tetromino which was previously held is spawned. If no Tetromino was being held before, the Tetromino that would normally spawn next is spawned.
+
 ### _Scoring_
 When a Tetromino comes to a rest, the rows which it is present in are checked for completion. If any of the rows are filled completely, they are cleared and points are added. More points are rewarded for clearing multiple rows at once. If clearing the rows results in an empty stage, an additional point reward is added.
 
