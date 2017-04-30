@@ -33,7 +33,6 @@ int is_empty(int grid[GRID_W][GRID_H]) {
             return 0;
         }
     }
-
     return 1;
 }
 

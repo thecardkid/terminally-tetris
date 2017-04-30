@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
             printf("  down......%c\n", DOWN_KEY);
             printf("  left......%c\n", LEFT_KEY);
             printf("  right.....%c\n", RIGHT_KEY);
+            printf("  hold......%c\n", HOLD_KEY);
             printf("  rotate....%c\n", ROTATE_KEY);
             printf("  drop......[space]\n");
             printf("\nMODES\n");

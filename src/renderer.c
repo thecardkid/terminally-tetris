@@ -56,6 +56,7 @@ int display_controls(int row) {
     mvprintw(row++, MENU_COL, "Down ---------------- %c", DOWN_KEY);
     mvprintw(row++, MENU_COL, "Left ---------------- %c", LEFT_KEY);
     mvprintw(row++, MENU_COL, "Right --------------- %c", RIGHT_KEY);
+    mvprintw(row++, MENU_COL, "Hold ---------------- %c", HOLD_KEY);
     mvprintw(row++, MENU_COL, "Rotate -- ----------- %c", ROTATE_KEY);
     mvprintw(row++, MENU_COL, "Pause --------------- %c", PAUSE_KEY);
     mvprintw(row++, MENU_COL, "Quit ---------------- %c", QUIT_KEY);
@@ -68,13 +69,22 @@ int display_controls(int row) {
 void display_preview(int row, BlockType next) {
     // must assign string of 4 spaces to index into
     // later on
-    char preview[2][5] = {"    ", "    "};
-    int x, y;
 
     copy_cells(next, preview_cells);
     mvprintw(row++, MENU_COL, "NEXT:");
+    display_block(row, MENU_COL, next);
+}
 
-    attron(COLOR_PAIR(next+1));
+void display_hold(int row, BlockType t) {
+    copy_cells(t, preview_cells);
+    display_block(row, MENU_COL+15, t);
+}
+
+void display_block(int row, int col, BlockType type) {
+    // must assign string of 4 spaces to index into
+    // later on
+    char preview[2][5] = {"    ", "    "};
+    int x, y;
 
     for (int i=0; i<4; i++) {
         x = preview_cells[i][0];
@@ -82,12 +92,11 @@ void display_preview(int row, BlockType next) {
         preview[y+1][x+1] = '@';
     }
 
-    mvprintw(row++, MENU_COL, preview[0]);
-    mvprintw(row++, MENU_COL, preview[1]);
-
-    attroff(COLOR_PAIR(next+1));
+    attron(COLOR_PAIR(type+1));
+    mvprintw(row++, col, preview[0]);
+    mvprintw(row, col, preview[1]);
+    attroff(COLOR_PAIR(type+1));
 }
-
 
 void render_default_boss_mode() {
     printw(
@@ -148,10 +157,16 @@ void render(State* state) {
     mvprintw(row++, MENU_COL, "LEVEL: %d", state->level);
     row++; // blank line
 
+    mvprintw(row, MENU_COL+15, "HOLD:");
+    if (state->held_block != NONE) {
+        display_hold(row+1, state->held_block);
+    }
+
     if (state->level < 5) {
         display_preview(row, state->next);
     } else {
-        mvprintw(row++, MENU_COL, "NO PREVIEW AT LEVEL 5 AND ABOVE!");
+        mvprintw(row++, MENU_COL, "NO PREVIEW");
+        mvprintw(row++, MENU_COL, "AT LEVELS");
+        mvprintw(row++, MENU_COL, "5 OR ABOVE");
     }
 }
-
