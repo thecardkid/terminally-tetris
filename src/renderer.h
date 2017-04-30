@@ -39,7 +39,7 @@ void display_preview(int row, BlockType next);
  * @param row: row to print from
  * @param next: block currently in hold domain
   */
-void display_hold(int row, Block* b);
+void display_hold(int row, BlockType next);
 
 /*
  * Display next block that will spawn
@@ -47,7 +47,7 @@ void display_hold(int row, Block* b);
  * @param row: row to print from
  * @param next: block that will spawn next
  */
-void display_block(int row, int col, int cells[4][2], BlockType type);
+void display_block(int row, int col, BlockType type);
 
 /*
  * Default text for when boss mode is incurred and

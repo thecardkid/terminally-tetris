@@ -215,48 +215,21 @@ void decide_hold(State* s) {
     } else {
         hold_piece(s);
         s->can_hold = 0;
-        s->in_hold = 1;
     }
 }
 
 void hold_piece(State* s) {
-    int cells[4][2];
     BlockType type;
-    BlockColor color;
 
-    if (s->in_hold) {
-        // save held_block data if there exists a held_block
-        type = s->held->type;
-        color = s->held->color;
-        memcpy(cells, s->held->cells, sizeof(I_Block));
+    if (s->held_block != NONE) {
+        type = s->held_block;
+        s->next = type;
     }
 
-    // save block into hold domain
-    memcpy(s->held->cells, s->block->cells, sizeof(I_Block));
-    s->held->type = s->block->type;
-    s->held->color = s->block->color;
-
+    s->held_block = s->block->type;
     clear_block(s);
     clear_ghost(s);
-
-    if (s->in_hold) {
-        // check to see if there is room to swap the blocks
-        for (int i = 0; i < 4; i++) {
-            int x = s->block->x + cells[i][0];
-            int y = s->block->y + cells[i][1];
-
-            if (s->grid[x][y] != EMPTY && s->grid[x][y] != GHOST) {
-                return;
-            }
-        }
-        // swap
-        memcpy(s->block->cells, cells, sizeof(I_Block));
-        s->block->type = type;
-        s->block->color = color;
-        project_ghost(s);
-    } else {
-        spawn(s);
-    }
+    spawn(s);
 }
 
 int move_block(State* s) {
@@ -334,13 +307,12 @@ void setup_state(State* s) {
     s->block_count = 0;
     s->score = 0;
     s->can_hold = 1;
-    s->in_hold = 0;
+    s->held_block = NONE;
 }
 
 void begin_game() {
     State* s = malloc(sizeof(State));
     s->block = malloc(sizeof(Block));
-    s->held = malloc(sizeof(Block));
     s->net_move = malloc(sizeof(Movement));
     setup_state(s);
     spawn(s);

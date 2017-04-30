@@ -50,7 +50,7 @@ typedef enum {EMPTY, CYAN, BLUE, WHITE, YELLOW, GREEN, PURPLE, RED, GHOST} Block
 /*
  * Taken from http://tetris.wikia.com/wiki/Tetromino
  */
-typedef enum {I, J, L, O, S, T, Z} BlockType;
+typedef enum {I, J, L, O, S, T, Z, NONE} BlockType;
 
 /*
  * Modes that the game can be in
@@ -82,13 +82,12 @@ typedef struct {
     int grid[GRID_W][GRID_H];
     int score;
     int level;
-    Gamemode mode; // 1: Game in progress 0: Game over
+    Gamemode mode;
     int speed; // speed at which blocks move down without user input
     int can_hold;
-    int in_hold;
     Block* block;
-    Block* held;
     BlockType next;
+    BlockType held_block;
     int block_count;
     Movement* net_move;
 } State;

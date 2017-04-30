@@ -72,30 +72,29 @@ void display_preview(int row, BlockType next) {
 
     copy_cells(next, preview_cells);
     mvprintw(row++, MENU_COL, "NEXT:");
-    display_block(row, MENU_COL, preview_cells, next);
+    display_block(row, MENU_COL, next);
 }
 
-void display_hold(int row, Block* b) {
-    display_block(row, MENU_COL + 12, b->cells, b->type);
+void display_hold(int row, BlockType t) {
+    copy_cells(t, preview_cells);
+    display_block(row, MENU_COL+15, t);
 }
 
-void display_block(int row, int col, int cells[4][2], BlockType type) {
+void display_block(int row, int col, BlockType type) {
     // must assign string of 4 spaces to index into
     // later on
     char preview[2][5] = {"    ", "    "};
     int x, y;
 
-    attron(COLOR_PAIR(type+1));
-
     for (int i=0; i<4; i++) {
-        x = cells[i][0];
-        y = cells[i][1];
+        x = preview_cells[i][0];
+        y = preview_cells[i][1];
         preview[y+1][x+1] = '@';
     }
 
+    attron(COLOR_PAIR(type+1));
     mvprintw(row++, col, preview[0]);
     mvprintw(row, col, preview[1]);
-
     attroff(COLOR_PAIR(type+1));
 }
 
@@ -156,15 +155,18 @@ void render(State* state) {
     row++; // blank line
     mvprintw(row++, MENU_COL, "SCORE: %d", state->score);
     mvprintw(row++, MENU_COL, "LEVEL: %d", state->level);
-    mvprintw(row++, MENU_COL, "CAN_HOLD: %d | IN_HOLD: %d", state->can_hold, state->in_hold);
     row++; // blank line
 
-    mvprintw(row, MENU_COL + 12, "HOLD:");
-    if (state->in_hold) {
-        display_hold(row+1, state->held);
+    mvprintw(row, MENU_COL+15, "HOLD:");
+    if (state->held_block != NONE) {
+        display_hold(row+1, state->held_block);
     }
 
     if (state->level < 5) {
         display_preview(row, state->next);
+    } else {
+        mvprintw(row++, MENU_COL, "NO PREVIEW");
+        mvprintw(row++, MENU_COL, "AT LEVELS");
+        mvprintw(row++, MENU_COL, "5 OR ABOVE");
     }
 }
