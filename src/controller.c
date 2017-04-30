@@ -210,9 +210,7 @@ void act_on_user_input( char user_input,
 }
 
 void decide_hold(State* s) {
-    if (s->can_hold == 0) {
-        return;
-    } else {
+    if (s->can_hold) {
         hold_piece(s);
         s->can_hold = 0;
     }
