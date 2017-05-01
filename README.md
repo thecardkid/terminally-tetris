@@ -1,5 +1,5 @@
 # Terminally Tetris
-Tetris for your Terminal
+Tetris for your Terminal. Visit our [github page](https://thecardkid.github.io/terminally-tetris/) for more info.
 
 ## Installation
 
