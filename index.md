@@ -3,6 +3,8 @@
 ### [Hieu Nguyen](https://github.com/thecardkid), [Daniel Bishop](https://github.com/Daniel6), [Shane Kelly](https://github.com/shanek21), [Rachel Yang](https://github.com/RachelYang02)
 Play Tetris in your terminal and disguise it as actual work!
 
+![boss_mode](docs/boss_mode.gif)
+
 ## What is Terminally Tetris?
 Terminally Tetris is a basic implementation of the popular game, Tetris, with a little extra. Terminally Tetris ships with the ability to pause and replace the game's visuals with the output of a package being installed. We call this "boss mode" as it serves as a quick way to diguise your tomfoolery from curious eyes. Terminally Tetris is designed to be lightweight, capable of starting and exiting at a moment's notice in order to avoid detection.
 
