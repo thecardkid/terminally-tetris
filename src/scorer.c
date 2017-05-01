@@ -33,7 +33,6 @@ int is_empty(int grid[GRID_W][GRID_H]) {
             return 0;
         }
     }
-
     return 1;
 }
 
@@ -83,7 +82,7 @@ void score_rows(State* s, int rows_cleared) {
         multiplier += 2000;
     }
 
-    s->score += multiplier * (s->level);
+    s->score += multiplier * (s->level+1);
 }
 
 void clear_row(int r, State* s) {

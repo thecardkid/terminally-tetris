@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#define _BSD_SOURCE
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -68,6 +70,16 @@ void shutdown_mode(State* s);
 void act_on_user_input(char user_input,
         int* frame_counter,
         State* s);
+
+/*
+ * Attempts to hold block
+ */
+void decide_hold(State* s);
+
+/*
+ * Swaps falling block with previously held block
+ */
+void hold_piece(State* s);
 
 /*
  * Most basic movement in the game, attempt to move block down by one step. If

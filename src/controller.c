@@ -191,6 +191,9 @@ void act_on_user_input( char user_input,
         case RIGHT_KEY:
             m->x++; // Move right by 1
             break;
+        case HOLD_KEY:
+            decide_hold(s); // hold current tetronimo
+            break;
         case ROTATE_KEY: // rotate block clockwise
             m->r = 1;
             break;
@@ -204,6 +207,27 @@ void act_on_user_input( char user_input,
             s->mode = BOSS;
             break;
     }
+}
+
+void decide_hold(State* s) {
+    if (s->can_hold) {
+        hold_piece(s);
+        s->can_hold = 0;
+    }
+}
+
+void hold_piece(State* s) {
+    BlockType type;
+
+    if (s->held_block != NONE) {
+        type = s->held_block;
+        s->next = type;
+    }
+
+    s->held_block = s->block->type;
+    clear_block(s);
+    clear_ghost(s);
+    spawn(s);
 }
 
 int move_block(State* s) {
@@ -227,7 +251,7 @@ int move_block(State* s) {
             can_move_vert = move_block_vertically(s);
             if (can_move_vert) {
                 applied_move = 1;
-            } 
+            }
         }
 
         // Try to move horizontally
@@ -280,6 +304,8 @@ void setup_state(State* s) {
     s->speed = 48;
     s->block_count = 0;
     s->score = 0;
+    s->can_hold = 1;
+    s->held_block = NONE;
 }
 
 void begin_game() {

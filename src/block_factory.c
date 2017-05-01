@@ -9,6 +9,7 @@ void copy_cells(BlockType t, int cells[4][2]) {
         case S: memcpy(cells, S_Block, sizeof(I_Block)); break;
         case J: memcpy(cells, J_Block, sizeof(I_Block)); break;
         case L: memcpy(cells, L_Block, sizeof(I_Block)); break;
+        default: return;
     }
 }
 
@@ -33,6 +34,7 @@ void spawn(State* s) {
         case S: spawn_S(s->block); break;
         case J: spawn_J(s->block); break;
         case L: spawn_L(s->block); break;
+        default: return;
     }
     s->block->x = SPAWN_X;
     s->block->y = 1;
@@ -40,6 +42,7 @@ void spawn(State* s) {
     int n;
 
     if (spawn_space_available(s)) {
+        s->can_hold = 1;
         s->next = choose_next(s->next);
         project_ghost(s);
     } else {

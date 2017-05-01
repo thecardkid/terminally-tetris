@@ -143,7 +143,9 @@ void clear_block(State* s) {
         int x = s->block->cells[i][0] + s->block->x;
         int y = s->block->cells[i][1] + s->block->y;
 
-        s->grid[x][y] = EMPTY;
+        if (s->grid[x][y] == s->block->color) {
+            s->grid[x][y] = EMPTY;
+        }
     }
 }
 
@@ -152,7 +154,9 @@ void clear_ghost(State* s) {
         int x = s->block->cells[i][0] + s->block->x;
         int y = s->block->cells[i][1] + s->block->ghosty;
 
-        s->grid[x][y] = EMPTY;
+        if (s->grid[x][y] == GHOST) {
+            s->grid[x][y] = EMPTY;
+        }
     }
 }
 
@@ -243,5 +247,4 @@ void rotate(Block* b){
 
     // reassign block's cells to the rotated coordinates
     memcpy(b->cells, rotated_cells, sizeof(b->cells));
-};
-
+}
