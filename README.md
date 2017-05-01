@@ -11,7 +11,7 @@ $ ttetris
 ```
 
 ## Seeing is believing
-![demo](docs/demo.gif)
+![demo](docs/gameplay.gif)
 
 ## Build from source
 
