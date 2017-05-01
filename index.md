@@ -1,6 +1,6 @@
 # Terminally Tetris
 ## Software Systems Spring 2017
-### [Hieu Nguyen](https://github.com/thecardkid) [Daniel Bishop](https://github.com/Daniel6) [Shane Kelly](https://github.com/shanek21) [Rachel Yang](https://github.com/RachelYang02)
+### [Hieu Nguyen](https://github.com/thecardkid), [Daniel Bishop](https://github.com/Daniel6), [Shane Kelly](https://github.com/shanek21), [Rachel Yang](https://github.com/RachelYang02)
 Play Tetris in your terminal and disguise it as actual work!
 
 ## What is Terminally Tetris?
@@ -10,9 +10,9 @@ Terminally Tetris is a basic implementation of the popular game, Tetris, with a 
 Terminally Tetris is written entirely in the C language.
 
 ### _Tetromino Movement_
-Tetrominos can move at variable speeds that are directly tied to the framerate of the game. By default, the game renders at 60fps, and a Tetromino will move towards the bottom of the stage every 48 frames. As the difficulty of the game increases, this number decreases to a minimum of 1 (Tetrominos move at every frame). Although the game can be modified to run at higher frequencies, this would only affect inpout handling which occurs on each render frame.
+Tetrominos can move at variable speeds that are directly tied to the framerate of the game. By default, the game renders at 60fps, and a Tetromino will move towards the bottom of the stage every 48 frames. As the difficulty of the game increases, this number decreases to a minimum of 1 (Tetrominos move at every frame). Although the game can be modified to run at higher frequencies, this would only affect input handling which occurs on each render frame.
 
-Valid Tetromino movements are all lateral directions, and counter/counter clockwise rotations. Not all of these movements are used in the game, but support for them exists.
+Valid Tetromino movements are all lateral directions, and clockwise/counter clockwise rotations. Not all of these movements are used in the game, but support for them exists.
 
 A special movement exists for dropping Tetrominos which instantly moves the Tetromino as far down as it can go. This lets the player quickly finalize the position of the Tetromino without having to make repeated downwards inputs or wait for the Tetromino to fall on its own.
 
@@ -31,10 +31,10 @@ When a playable Tetromino attempts to move vertically as part of its movement bu
 ### _User Input_
 User input is aggregated over a timespan after which a movement structure is generated and applied to the playable Tetromino. By default the aggregation period is 1 frame, but can be extended to accept inputs over a longer span. The purpose of aggregation is to combine multiple user inputs into 1 movement, cancelling out conflicting inputs such as move left and move right. The aggregation period should be a few frames in order to catch keys being pressed at almost the same time.
 
-When user inputs generate a movement structure, the movement is applied to the playable Tetromino immediately, unlike the standard downwards progression of the piece. If the user movement includes a downwards portion, the Tetromino will reset its timer and wait another 48 frames (or however many the difficulty calsl for) before moving downwards again.
+When user inputs generate a movement structure, the movement is applied to the playable Tetromino immediately, unlike the standard downwards progression of the piece. If the user movement includes a downwards portion, the Tetromino will reset its timer and wait another 48 frames (or however many the difficulty calls for) before moving downwards again.
 
 ### _Tetromino Spawning_
-When a new is spawned, it is chosen from the pool of [Tetromino types](http://tetris.wikia.com/wiki/Tetromino#The_Basic_Tetrominoes) with a bias against choosing the same type as the previous Tetromino. This new Tetromino is spawned above the top of the visible game area in a buffer zone, and is then moved down into the playable area by user input or the natural game progression.
+When a new Tetromino is spawned, it is chosen from the pool of [Tetromino types](http://tetris.wikia.com/wiki/Tetromino#The_Basic_Tetrominoes) with a bias against choosing the same type as the previous Tetromino. This new Tetromino is spawned above the top of the visible game area in a buffer zone, and is then moved down into the playable area by user input or the natural game progression.
 
 The Tetromino to be spawned after the current one is also calcuated in the spawning process, and is displayed to the player to help them plan their moves in advance.
 
@@ -53,6 +53,6 @@ Ghosting is a feature that displays the final position of the playable Tetromino
 Terminally Tetris uses the [ncurses](https://en.wikipedia.org/wiki/Ncurses) library to render itself as ASCII art in the terminal. Upon entering Boss Mode, it renders some sample output from package installation processes in its place.
 
 ## Results
-![rubik.gif](reports/resources/cube_solving.gif)
+![gameplay](docs/gameplay.gif)
 
-Running our program ([found here](https://github.com/thecardkid/SoftSysAsocialAardvark)), a user is able to manipulate the cube, scramble it, and solve it. The solution (with both the moves and the time the thread took to complete) is printed to console. As an example, thread #5 on our test ran for 0.000628s and solved the cube in 6 moves (a more complex scramble would take longer).  If we had more time for this project, our stretch goals included extending our implementation to support cubes of larger size (theoretically to nxnxn) and using different solve algorithms with threading to show performance differences (in terms of moves and CPU time).
+Running our software renders an instance of Tetris in the terminal! Terminally Tetris has the full functionality of original Tetris including row clears, a score board, next block preview, block dropping, and more! It's everything you could want from a 1984 Russian-made video game, but now without leaving the comfort of your favorite shell!
