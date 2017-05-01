@@ -15,12 +15,28 @@ $ ttetris
 
 ## Build from source
 
-- First clone the repo `git clone https://github.com/thecardkid/terminally-tetris`
-- Then build the source code `cd terminally-tetris && make`
-- Move the executable `mv build/ttetris /usr/local/bin` (I assume here that `/usr/local/bin` is part of your `$PATH`. If not:
-  - `echo $PATH`
-  - `mv` the executable into any of the `:` delimited directories
-- Play using `ttetris`
+### Install Dependencies (`ncurses`)
+
+OSX: `$ brew install ncurses`
+
+Ubuntu: `$ sudo apt-get install ncurses5-dev`
+
+### Clone the repo
+`$ git clone https://github.com/thecardkid/terminally-tetris`
+
+### Build source code
+`$ cd terminally-tetris && make`
+
+### Move the executable to `$PATH`
+`$ mv build/ttetris /usr/local/bin`
+
+I assumed that `/usr/local/bin` is part of your `$PATH`. If not:
+
+- `$ echo $PATH` and then
+- `mv` the executable into any of the `:` delimited directories
+
+### Play
+`$ ttetris`
 
 ## Co-Authors
 
