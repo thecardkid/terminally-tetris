@@ -10,14 +10,14 @@ void set_up_screen() {
 
     use_default_colors();
     // Set up color schemes for each block
-    init_pair(CYAN, COLOR_CYAN, -1);
-    init_pair(BLUE, COLOR_BLUE, -1);
-    init_pair(WHITE, COLOR_WHITE, -1);
-    init_pair(YELLOW, COLOR_YELLOW, -1);
-    init_pair(GREEN, COLOR_GREEN, -1);
-    init_pair(PURPLE, COLOR_MAGENTA, -1);
-    init_pair(RED, COLOR_RED, -1);
-    init_pair(GHOST, -1, COLOR_WHITE);
+    init_pair(CYAN, -1, COLOR_CYAN);
+    init_pair(BLUE, -1, COLOR_BLUE);
+    init_pair(WHITE, -1, COLOR_WHITE);
+    init_pair(YELLOW, -1, COLOR_YELLOW);
+    init_pair(GREEN, -1, COLOR_GREEN);
+    init_pair(PURPLE, -1, COLOR_MAGENTA);
+    init_pair(RED, -1, COLOR_RED);
+    init_pair(GHOST, COLOR_WHITE, -1);
 }
 
 void display_grid(int grid[GRID_W][GRID_H]) {
@@ -30,9 +30,9 @@ void display_grid(int grid[GRID_W][GRID_H]) {
                 attron(COLOR_PAIR(block));
 
                 if (block == GHOST) {
-                    printw(" ");
-                } else {
                     printw("@");
+                } else {
+                    printw(" ");
                 }
 
                 attroff(COLOR_PAIR(block));
@@ -87,10 +87,18 @@ void display_block(int row, int col, BlockType type) {
         preview[y+1][x+1] = '@';
     }
 
-    attron(COLOR_PAIR(type+1));
-    mvprintw(row++, col, preview[0]);
-    mvprintw(row, col, preview[1]);
-    attroff(COLOR_PAIR(type+1));
+    for (int i=0; i<5; i++) {
+        if (preview[0][i] == '@') {
+            attron(COLOR_PAIR(type+1));
+        }
+        mvprintw(row, col+i, " ");
+        attroff(COLOR_PAIR(type+1));
+        if (preview[1][i] == '@') {
+            attron(COLOR_PAIR(type+1));
+        }
+        mvprintw(row+1, col+i, " ");
+        attroff(COLOR_PAIR(type+1));
+    }
 }
 
 void render_default_boss_mode() {
