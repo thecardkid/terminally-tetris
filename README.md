@@ -19,7 +19,7 @@ $ ttetris
 
 OSX: `$ brew install ncurses`
 
-Ubuntu: `$ sudo apt-get install ncurses5-dev`
+Ubuntu: `$ sudo apt-get install libncurses5-dev`
 
 ### Clone the repo
 `$ git clone https://github.com/thecardkid/terminally-tetris`
