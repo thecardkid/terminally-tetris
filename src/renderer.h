@@ -17,8 +17,6 @@ void set_up_screen();
  */
 void display_grid(int grid[GRID_W][GRID_H]);
 
-void display_endgame(State* s);
-
 /*
  * Display control menu
  *
