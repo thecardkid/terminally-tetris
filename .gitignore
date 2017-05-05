@@ -3,6 +3,7 @@ CMakeLists.txt
 .DS_Store
 build
 cmake-build-debug/
+tags
 
 # Object files
 *.o
