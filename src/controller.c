@@ -34,7 +34,7 @@ void wait_until_resume() {
     while (getch() != RESUME_KEY);
 }
 
-void run_mode(State* s, int* frame_counter) {
+void run_mode(State* s, int* frame_counter, WINDOW* game) {
     (*frame_counter)++;
     // Collect desired total movement in this frame
     aggregate_movement(s, frame_counter);
@@ -61,47 +61,21 @@ void run_mode(State* s, int* frame_counter) {
 
     // Rendering loop
     erase();
-    render(s);
+    render(s, game);
     refresh();
 
     // Assuming execution of loop takes negligible time
     usleep(US_DELAY);
 }
 
-void boss_mode(State* s) {
-    erase();
-
-    FILE *fp;
-    char path[1035];
-
-    // pipe command into a temp file stream
-    fp = popen("/bin/ls -l /etc/", "r");
-    if (fp == NULL) {
-        // print default text if error happened
-        render_default_boss_mode();
-    } else {
-        while (fgets(path, sizeof(path)-1, fp) != NULL) {
-            printw("%s", path);
-        }
-
-        pclose(fp);
-    }
-
-    wait_until_resume();
-
-    s->mode = RUNNING;
-}
-
 void pause_mode(State* s) {
-    mvprintw(MENU_ROW, MENU_COL, "*** PAUSED ***");
+    mvprintw(MENU_ROW, MENU_COL, "***** PAUSED *****");
     wait_until_resume();
 
     s->mode = RUNNING;
 }
 
-int wait_until_option_selected(const char* title,
-        const char** items,
-        int num_items) {
+int wait_until_option_selected(const char* title, const char** items, int num_items) {
     char user_input;
     int selection = 0;
 
@@ -112,10 +86,10 @@ int wait_until_option_selected(const char* title,
 
         // Navigate through the menu based on user-input
         switch (user_input) {
-            case UP_KEY:
+            case UP_KEY_1:
                 decrement_with_min(&selection, 0);
                 break;
-            case DOWN_KEY:
+            case DOWN_KEY_1:
                 increment_with_max(&selection, num_items-1);
                 break;
         }
@@ -128,8 +102,8 @@ int wait_until_option_selected(const char* title,
 }
 
 void endgame_mode(State* s) {
-    const char* title = "*** GAME OVER ***";
-    const char* items[] = { "new game", "quit" };
+    const char* title = "***** GAME OVER *****";
+    const char* items[] = { "New Game", "Quit" };
     const int num_items = 2;
 
     int selection = wait_until_option_selected(title, items, num_items);
@@ -146,8 +120,8 @@ void endgame_mode(State* s) {
 }
 
 void confirm_quit_mode(State* s) {
-    const char* title = "*** QUIT? ***";
-    const char* items[] = { "no", "yes" };
+    const char* title = "***** QUIT? *****";
+    const char* items[] = { "NO", "YES" };
     const int num_items = 2;
 
     // Until the user presses the select key
@@ -174,27 +148,29 @@ void shutdown_mode(State* s) {
 
 void act_on_user_input( char user_input,
     int* frame_counter,
-    State* s) {
+    State* s){
+
+
     Movement* m = s->net_move;
 
     switch(user_input) {
-        case DROP_KEY:
+        case DROP_KEY_1:
             m->drop = 1;
             break;
-        case DOWN_KEY:
+        case DOWN_KEY_1:
             m->y = 1; // Move down by 1
             *frame_counter = 0; // Reset counter for default downwards move
             break;
-        case LEFT_KEY:
+        case LEFT_KEY_1:
             m->x--; // Move left by 1
             break;
-        case RIGHT_KEY:
+        case RIGHT_KEY_1:
             m->x++; // Move right by 1
             break;
-        case HOLD_KEY:
+        case HOLD_KEY_1:
             decide_hold(s); // hold current tetronimo
             break;
-        case ROTATE_KEY: // rotate block clockwise
+        case ROTATE_KEY_1: // rotate block clockwise
             m->r = 1;
             break;
         case PAUSE_KEY: // pause the game
@@ -202,9 +178,6 @@ void act_on_user_input( char user_input,
             break;
         case QUIT_KEY: // confirm the user wants to quit
             s->mode = CONFIRM_QUIT;
-            break;
-        case BOSS_MODE_KEY: // set the game to boss mode
-            s->mode = BOSS;
             break;
     }
 }
@@ -308,22 +281,108 @@ void setup_state(State* s) {
     s->held_block = NONE;
 }
 
+// set Initial Screen
+void setInitialScreen(){
+    int start_x = 9;
+    int start_y = 5;
+
+    int i = 1;
+
+    WINDOW* init = newwin(25,70,0,0);
+    box(init,ACS_VLINE, ACS_HLINE);
+    wrefresh(init);
+
+    //T
+    wattron(init, COLOR_PAIR(i));
+    mvwprintw(init, start_y,start_x,"      ");
+    mvwprintw(init, start_y+1,start_x+2,"  ");
+    mvwprintw(init, start_y+2,start_x+2,"  ");
+    mvwprintw(init, start_y+3,start_x+2,"  ");
+    mvwprintw(init, start_y+4,start_x+2,"  ");
+    wattroff(init, COLOR_PAIR(i));
+    start_x+= 9; i++;
+
+    //E
+    wattron(init, COLOR_PAIR(i));
+    mvwprintw(init, start_y,start_x,"      ");
+    mvwprintw(init, start_y+1,start_x,"  ");
+    mvwprintw(init, start_y+2,start_x,"      ");
+    mvwprintw(init, start_y+3,start_x,"  ");
+    mvwprintw(init, start_y+4,start_x,"      ");
+    wattroff(init, COLOR_PAIR(i));
+    start_x+=9; i++;
+
+    //T
+    wattron(init, COLOR_PAIR(i));
+    mvwprintw(init, start_y,start_x,"      ");
+    mvwprintw(init, start_y+1,start_x+2,"  ");
+    mvwprintw(init, start_y+2,start_x+2,"  ");
+    mvwprintw(init, start_y+3,start_x+2,"  ");
+    mvwprintw(init, start_y+4,start_x+2,"  ");
+    wattroff(init, COLOR_PAIR(i));
+    start_x+= 9; i++;
+
+    //R
+    wattron(init, COLOR_PAIR(i));
+    mvwprintw(init, start_y,start_x,"    ");
+    mvwprintw(init, start_y+1,start_x,"  "); 
+    mvwprintw(init, start_y+1,start_x+4, "  ");
+    mvwprintw(init, start_y+2,start_x,"    ");
+    mvwprintw(init, start_y+3,start_x,"  ");
+    mvwprintw(init, start_y+3,start_x+4,"  ");
+    mvwprintw(init, start_y+4,start_x,"  ");
+    mvwprintw(init, start_y+4,start_x+4,"  ");
+    wattroff(init, COLOR_PAIR(i));
+    start_x+=9; i++;
+
+    //I
+    wattron(init, COLOR_PAIR(i));
+    mvwprintw(init, start_y,start_x,"      ");
+    mvwprintw(init, start_y+1,start_x+2,"  "); 
+    mvwprintw(init, start_y+2,start_x+2,"  ");
+    mvwprintw(init, start_y+3,start_x+2,"  ");
+    mvwprintw(init, start_y+4,start_x,"      ");
+    wattroff(init, COLOR_PAIR(i));
+    start_x+=9; i++;
+
+    //E
+    wattron(init, COLOR_PAIR(i));
+    mvwprintw(init, start_y,start_x,"      ");
+    mvwprintw(init, start_y+1,start_x,"  ");
+    mvwprintw(init, start_y+2,start_x,"      ");
+    mvwprintw(init, start_y+3,start_x+4,"  ");
+    mvwprintw(init, start_y+4,start_x,"      ");
+    wattroff(init, COLOR_PAIR(i));
+
+    //press Any key to start
+    mvwprintw(init, 15, 24, "press Any key to start");
+
+    //Team info
+    //mvwprintw(init, 23, 56, "By.OSS Team 7");
+
+    wrefresh(init);
+    getchar();
+    endwin();
+}
+
+// start game mode
 void begin_game() {
     State* s = malloc(sizeof(State));
     s->block = malloc(sizeof(Block));
     s->net_move = malloc(sizeof(Movement));
+    WINDOW* game = newwin(GRID_H+1, 2*GRID_W+2, 0, 0);
+    wrefresh(game);
     setup_state(s);
     spawn(s);
 
     int frame_counter = 0;
 
+    setInitialScreen();
+
     while (1) {
         switch (s->mode) {
             case RUNNING:
-                run_mode(s, &frame_counter);
-                break;
-            case BOSS:
-                boss_mode(s);
+                run_mode(s, &frame_counter, game);
                 break;
             case PAUSED:
                 pause_mode(s);

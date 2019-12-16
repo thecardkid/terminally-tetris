@@ -39,14 +39,7 @@ void wait_until_resume();
 /*
  * The main run state of the game.
  */
-void run_mode(State* s, int* frame_counter);
-
-/*
- * Pipes the output of `ls -l /etc/` to a file stream
- * and then to the ncurses window, making it look like
- * you were doing work
- */
-void boss_mode(State* s);
+void run_mode(State* s, int* frame_counter, WINDOW* game);
 
 /*
  * Pauses the game
@@ -101,6 +94,8 @@ int move_block(State* s);
 void aggregate_movement(State* s, int* frame_counter);
 
 void setup_state(State* s);
+
+void setInitialScreen();
 
 void begin_game();
 

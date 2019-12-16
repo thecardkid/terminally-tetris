@@ -20,44 +20,46 @@ void set_up_screen() {
     init_pair(GHOST, COLOR_WHITE, -1);
 }
 
-void display_grid(int grid[GRID_W][GRID_H]) {
+void display_grid(WINDOW* game, int grid[GRID_W][GRID_H]) {
     int i, j, block;
 
-    for (int y = OFFSET; y < GRID_H; y++) {
-        mvprintw(y-OFFSET, 0, "|");
+    for (int y = 1; y < GRID_H; y++) {
         for (int x = 0; x < GRID_W; x++) {
             if ((block = grid[x][y]) != EMPTY) {
-                attron(COLOR_PAIR(block));
+                wattron(game, COLOR_PAIR(block));
 
                 if (block == GHOST) {
-                    printw("@");
+                    mvwprintw(game, y, 2*x+1, "[]");
                 } else {
-                    printw(" ");
+                    mvwprintw(game, y, 2*x+1, "  ");
                 }
 
-                attroff(COLOR_PAIR(block));
+                wattroff(game, COLOR_PAIR(block));
             } else {
-                printw(" ");
+                mvwprintw(game, y, 2*x+1, "  ");
             }
         }
-        printw("|\n");
     }
 
-    mvprintw(GRID_H-OFFSET, 0, "------------");
+    box(game, ACS_VLINE, ACS_HLINE);
+    wrefresh(game);
 }
 
 int display_controls(int row) {
     mvprintw(row++, MENU_COL, "CONTROLS:");
-    mvprintw(row++, MENU_COL, "Down ---------------- %c", DOWN_KEY);
-    mvprintw(row++, MENU_COL, "Left ---------------- %c", LEFT_KEY);
-    mvprintw(row++, MENU_COL, "Right --------------- %c", RIGHT_KEY);
-    mvprintw(row++, MENU_COL, "Hold ---------------- %c", HOLD_KEY);
-    mvprintw(row++, MENU_COL, "Rotate -- ----------- %c", ROTATE_KEY);
-    mvprintw(row++, MENU_COL, "Pause --------------- %c", PAUSE_KEY);
-    mvprintw(row++, MENU_COL, "Quit ---------------- %c", QUIT_KEY);
-    mvprintw(row++, MENU_COL, "Boss Mode ----------- %c", BOSS_MODE_KEY);
-    mvprintw(row++, MENU_COL, "Resume -------------- %c", RESUME_KEY);
-    mvprintw(row++, MENU_COL, "Select -------------- %s", "ENTER");
+    mvprintw(row++, MENU_COL, "Down ---------------- arrow down");
+    mvprintw(row++, MENU_COL, "Left ---------------- arrow left");
+    mvprintw(row++, MENU_COL, "Right --------------- arrow right");
+    mvprintw(row++, MENU_COL, "Drop ---------------- [space bar]");
+    mvprintw(row++, MENU_COL, "Rotate -------------- R(r) or A(a)");
+    mvprintw(row++, MENU_COL, "Hold ---------------- H");
+
+    mvprintw(row++, MENU_COL, "---------------------------");
+    mvprintw(row++, MENU_COL, "---------------------------");
+    mvprintw(row++, MENU_COL, "Pause --------------- 1");
+    mvprintw(row++, MENU_COL, "Resume -------------- 2");
+    mvprintw(row++, MENU_COL, "Quit ---------------- 3");
+    mvprintw(row++, MENU_COL, "Select -------------- [Enter]");
     return row;
 }
 
@@ -66,13 +68,13 @@ void display_preview(int row, BlockType next) {
     // later on
 
     copy_cells(next, preview_cells);
-    mvprintw(row++, MENU_COL, "NEXT:");
-    display_block(row, MENU_COL, next);
+    mvprintw(row, MENU_COL+1, "NEXT:");
+    display_block(row + 2, MENU_COL, next);
 }
 
 void display_hold(int row, BlockType t) {
     copy_cells(t, preview_cells);
-    display_block(row, MENU_COL+15, t);
+    display_block(row, MENU_COL+10, t);
 }
 
 void display_block(int row, int col, BlockType type) {
@@ -91,44 +93,14 @@ void display_block(int row, int col, BlockType type) {
         if (preview[0][i] == '@') {
             attron(COLOR_PAIR(type+1));
         }
-        mvprintw(row, col+i, " ");
+        mvprintw(row, col+2*i, "  ");
         attroff(COLOR_PAIR(type+1));
         if (preview[1][i] == '@') {
             attron(COLOR_PAIR(type+1));
         }
-        mvprintw(row+1, col+i, " ");
+        mvprintw(row+1, col+2*i, "  ");
         attroff(COLOR_PAIR(type+1));
     }
-}
-
-void render_default_boss_mode() {
-    printw(
-        "user@workstation-312:~/Developer/project $ gem install heroku --no-redoc --no-ri\n"
-        "ERROR:  While executing gem ... (Errno::EACCES)\n"
-        "    Permission denied - /Users/user/.gem/ruby/1.9.1/cache/heroku-1.9.13.gem\n"
-        "\n"
-        "user@workstation-312:~/Developer/project $ sudo !!\n"
-        "sudo gem install heroku --no-redoc --no-ri\n"
-        "Successfully installed heroku-1.9.13\n"
-        "1 gem installed\n"
-        "\n"
-        "user@workstation-312:~/Developer/project $ ls -l\n"
-        "total 528\n"
-        "drwxr-xr-x    2 user users   4096 Jun  9 17:05 .\n"
-        "drwxr-xr-x    4 user users   4096 Jun 10 09:52 ..\n"
-        "-rw-r--r--@   1 user users  88583 Jun  9 14:13 .babelrc\n"
-        "-rw-r--r--    1 user users  65357 Jun  9 15:40 .git/\n"
-        "-rw-r--r--    1 user users   4469 Jun  9 16:17 .gitignore\n"
-        "-rw-r--r--    1 user users    455 Jun  9 16:17 index.js\n"
-        "-rw-r--r--    1 user users   2516 Jun  9 16:17 node_modules/\n"
-        "-rw-r--r--    1 user users    183 Jun  9 16:17 package.json\n"
-        "-rw-r--r--    1 user users 349607 Jun  9 16:17 public/\n"
-        "-rw-r--r--    1 user users      0 Jun  9 16:17 src/\n"
-        "-rw-r--r--    1 user users   9284 Jun  9 17:05 webpack.config.js\n"
-        "-rw-r--r--    1 user users    229 Jun  9 16:17 tetris.save\n"
-        "\n"
-        "user@workstation-312:~/Developer/project $ "
-    );
 }
 
 void render_menu(const char* title,
@@ -145,24 +117,25 @@ void render_menu(const char* title,
         }
 
         // Render each menu item
-        mvprintw(MENU_ROW+1+i, MENU_COL+2, items[i]);
+        mvprintw(MENU_ROW+1+i, MENU_COL+7, items[i]);
         attroff(A_STANDOUT);
     }
 }
 
-void render(State* state) {
+void render(State* state, WINDOW* game) {
     int row = 1;
 
-    display_grid(state->grid);
+    refresh();
+    display_grid(game, state->grid);
     row = display_controls(row);
     row++; // blank line
     mvprintw(row++, MENU_COL, "SCORE: %d", state->score);
     mvprintw(row++, MENU_COL, "LEVEL: %d", state->level);
     row++; // blank line
 
-    mvprintw(row, MENU_COL+15, "HOLD:");
+    mvprintw(row, MENU_COL+10, " HOLD:");
     if (state->held_block != NONE) {
-        display_hold(row+1, state->held_block);
+        display_hold(row+2, state->held_block);
     }
 
     if (state->level < 5) {
