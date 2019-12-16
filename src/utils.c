@@ -1,13 +1,26 @@
 #include "utils.h"
 
 // Note that here the positive Y axis points "down"
-const int I_Block[4][2] = {{0,0}, {2,0}, {-1,0}, {1,0}};
-const int O_Block[4][2] = {{0,0}, {1,0}, {1,-1}, {0,-1}};
-const int T_Block[4][2] = {{0,0}, {1,0}, {-1,0}, {0,-1}};
+const int I_Block[4][2] = {{0,0}, {2,0}, {-1,0}, {1,0}}; 
+// O@OO 
+const int O_Block[4][2] = {{0,0}, {1,0}, {1,-1}, {0,-1}};  
+// OO 
+// @O 
+const int T_Block[4][2] = {{0,0}, {1,0}, {-1,0}, {0,-1}};  
+//  O  
+// O@O 
 const int Z_Block[4][2] = {{0,0}, {1,0}, {0,-1}, {-1,-1}};
+// OO
+//  @O
 const int S_Block[4][2] = {{0,0}, {-1,0}, {0,-1}, {1,-1}};
+//  OO
+// O@
 const int J_Block[4][2] = {{0,0}, {1,0}, {-1,0}, {-1,-1}};
+// O
+// O@O
 const int L_Block[4][2] = {{0,0}, {-1,0}, {1,0}, {1,-1}};
+//   O
+// O@O
 const int ROTATION_MATRIX_R[2][2] = {{0,1}, {-1,0}};
 
 int in_grid(int x, int y) {
@@ -16,7 +29,7 @@ int in_grid(int x, int y) {
 }
 
 int can_move_vertically(int x, int y, State* s) {
-    int delta_y = s->net_move->y;
+    int delta_y = s->net_move->y; // distance of y movement
     int dy;
     if (delta_y < 0) {
         dy = -1;
@@ -24,7 +37,7 @@ int can_move_vertically(int x, int y, State* s) {
         dy = 1;
     }
 
-    while (dy*dy <= delta_y*delta_y) {
+    while (dy*dy <= delta_y*delta_y) { // check y movement one by one
         if (!in_grid(x, y + dy) || s->grid[x][y + dy] != EMPTY) {
             return 0;
         }
@@ -40,7 +53,7 @@ int can_move_vertically(int x, int y, State* s) {
 }
 
 int can_move_horizontally(int x, int y, State* s) {
-    int delta_x = s->net_move->x;
+    int delta_x = s->net_move->x; // distance of x movement
     int dx;
     if (delta_x < 0) {
         dx = -1;
@@ -48,7 +61,7 @@ int can_move_horizontally(int x, int y, State* s) {
         dx = 1;
     }
 
-    while (dx*dx <= delta_x*delta_x) {
+    while (dx*dx <= delta_x*delta_x) { // check x movement one by one
         if (!in_grid(x + dx, y) || s->grid[x + dx][y] != EMPTY) {
             return 0;
         }
@@ -67,8 +80,8 @@ int move_block_vertically(State* s) {
     Movement* m = s->net_move;
     int can_move_vert = 1;
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->y; // y position of one cell of a block 
 
         // Conditions where move is invalid
         if (!can_move_vertically(x, y, s)) {
@@ -77,7 +90,7 @@ int move_block_vertically(State* s) {
         }
     }
     if (can_move_vert) {
-        s->block->y += m->y;
+        s->block->y += m->y; // y movement
         m->y = 0; // signal that we have performed this operation
         return 1; // signal that A operation was performed
     } else {
@@ -89,8 +102,8 @@ int move_block_horizontally(State* s) {
     Movement* m = s->net_move;
     int can_move_horiz = 1;
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->y; // y position of one cell of a block
 
         // Conditions where move is invalid
         if (!can_move_horizontally(x, y, s)) {
@@ -99,7 +112,7 @@ int move_block_horizontally(State* s) {
         }
     }
     if (can_move_horiz) {
-        s->block->x += m->x;
+        s->block->x += m->x; // x movement
         m->x = 0;
         return 1;
     } else {
@@ -114,10 +127,10 @@ int rotate_block(State* s) {
     // Make copy of current cells
     memcpy(old_cells, s->block->cells, sizeof(I_Block));
     rotate(s->block);
-
+    // rotate then check
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->y; // y position of one cell of a block
 
         // Conditions where move is invalid
         if (!in_grid(x, y) || s->grid[x][y] != EMPTY) {
@@ -140,8 +153,8 @@ int rotate_block(State* s) {
 
 void clear_block(State* s) {
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->y; // y position of one cell of a block
 
         if (s->grid[x][y] == s->block->color) {
             s->grid[x][y] = EMPTY;
@@ -151,8 +164,8 @@ void clear_block(State* s) {
 
 void clear_ghost(State* s) {
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->ghosty;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->ghosty; // y position of one cell of a block
 
         if (s->grid[x][y] == GHOST) {
             s->grid[x][y] = EMPTY;
@@ -162,26 +175,26 @@ void clear_ghost(State* s) {
 
 void draw_block(State* s) {
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->y;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->y; // y position of one cell of a block
 
-        s->grid[x][y] = s->block->color;
+        s->grid[x][y] = s->block->color; // draw
     }
 }
 
 void draw_ghost(State* s) {
     for (int i = 0; i < 4; i++) {
-        int x = s->block->cells[i][0] + s->block->x;
-        int y = s->block->cells[i][1] + s->block->ghosty;
+        int x = s->block->cells[i][0] + s->block->x; // x position of one cell of a block
+        int y = s->block->cells[i][1] + s->block->ghosty; // y position of one cell of a block
 
-        s->grid[x][y] = GHOST;
+        s->grid[x][y] = GHOST; // draw
     }
 }
 
 void project_ghost(State* s) {
     int ghost_y = s->block->y;
 
-    if (ghost_y > GRID_H-OFFSET) ghost_y = GRID_H-OFFSET;
+    if (ghost_y > GRID_H) ghost_y = GRID_H;
 
     // It can be assumed that the ghost fits in the starting position since
     //  it starts in the same place as the block.
@@ -239,7 +252,7 @@ void rotate(Block* b){
         for (int j = 0; j < 2; j++) {   //column of second matrix
             sum = 0;
             for (int k = 0; k < 2; k++) {
-                sum += (b->cells[i][k]) * ROTATION_MATRIX_R[k][j];
+                sum += (b->cells[i][k]) * ROTATION_MATRIX_R[k][j]; // caculate position of one cell of block by multiplying rotation matrix
                 rotated_cells[i][j]=sum;
             }
         }

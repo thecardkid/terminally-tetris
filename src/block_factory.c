@@ -16,11 +16,12 @@ void copy_cells(BlockType t, int cells[4][2]) {
 BlockType choose_next(BlockType current) {
     int n;
 
-    n = rand() % (NUM_BLOCKS + 1);
+    n = rand() % NUM_BLOCKS;
 
-    if (n == NUM_BLOCKS || n == current) {
+    // lower the possibility of block type same as before
+    if (n == current) {
         n = rand() % NUM_BLOCKS;
-    }
+    } 
 
     return n;
 }
@@ -36,7 +37,7 @@ void spawn(State* s) {
         case L: spawn_L(s->block); break;
         default: return;
     }
-    s->block->x = SPAWN_X;
+    s->block->x = SPAWN_X; // 7
     s->block->y = 1;
 
     int n;
@@ -46,7 +47,7 @@ void spawn(State* s) {
         s->next = choose_next(s->next);
         project_ghost(s);
     } else {
-        s->mode = ENDGAME;
+        s->mode = ENDGAME; // Game Over
     }
 }
 

@@ -3,30 +3,44 @@
 
 #include <string.h>
 
-#define GRID_W 10
+#define GRID_W 16
 #define GRID_H 22
-#define OFFSET 2
-#define SPAWN_X 4
+#define SPAWN_X 7
 #define NUM_BLOCKS 7
-#define MENU_COL GRID_W+5
-#define MENU_ROW 20
+#define MENU_COL 2*GRID_W+5
+#define MENU_ROW 23
 #define CRITICAL_BLOCK 15
 
 /*
  * Controls
  */
-#define UP_KEY 'i'
-#define DOWN_KEY 'k'
-#define LEFT_KEY 'j'
-#define RIGHT_KEY 'l'
-#define HOLD_KEY 'a'
-#define ROTATE_KEY 'f'
-#define PAUSE_KEY 'p'
-#define QUIT_KEY 'q'
-#define BOSS_MODE_KEY 'b'
-#define RESUME_KEY 'r'
-#define DROP_KEY ' '
-#define SELECT_KEY '\n'
+//key for player one
+#define UP_KEY_1 65
+#define DOWN_KEY_1 66
+#define LEFT_KEY_1 68
+#define RIGHT_KEY_1 67
+// key for player two
+/*
+#define UP_KEY_2 65
+#define DOWN_KEY_2 66
+#define LEFT_KEY_2 68
+#define RIGHT_KEY_2 67
+*/
+
+#define DROP_KEY_1 ' '
+
+
+#define HOLD_KEY_1 'h'
+
+
+
+#define ROTATE_KEY_1 'r'
+#define ROTATE_KEY_2 'a'
+
+#define PAUSE_KEY '1'
+#define RESUME_KEY '2'
+#define QUIT_KEY '3'
+#define SELECT_KEY 10
 
 /*
  * External constants to be used in other files
@@ -55,7 +69,7 @@ typedef enum {I, J, L, O, S, T, Z, NONE} BlockType;
 /*
  * Modes that the game can be in
  */
-typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, ENDGAME, BOSS} Gamemode;
+typedef enum {RUNNING, PAUSED, CONFIRM_QUIT, SHUTDOWN, ENDGAME } Gamemode;
 
 /*
   Representation of generic Tetris block
